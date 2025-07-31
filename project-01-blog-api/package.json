@@ -1,0 +1,12 @@
+{
+  "name": "100-backend-projects",
+  "version": "1.0.0",
+  "description": "Welcome to my 100-project backend development challenge! Starting from July 30, 2025, I'm committed to building 100 different backend projects to master backend development.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
