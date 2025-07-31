@@ -28,15 +28,14 @@ router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     
-    // Find user
     const user = await User.findOne({ username, password });
     if (!user) {
       return res.send('Invalid username or password!');
     }
     
-    // Simple session (store username)
-    req.session = { username };
-    res.send('Login successful! Welcome ' + username);
+    req.session.username = username;
+    // Redirect to dashboard instead of just sending message
+    res.redirect('/dashboard.html');
   } catch (error) {
     res.send('Login failed: ' + error.message);
   }
