@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const User = require("../models/User"); // Import the User model here
+const User = require("../models/User");
 
 // Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
@@ -87,4 +87,3 @@ module.exports = {
   validateUserLogin,
   checkDuplicateUser,
 };
-    
