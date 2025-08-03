@@ -8,6 +8,7 @@
     "start:p1": "node project-01-blog-api/server.js",
     "start:p2": "node project-02-products-api/server.js",
     "start:p3": "node project-03-file-upload-api/server.js",
+    "start:p4": "node project-04-user-auth-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

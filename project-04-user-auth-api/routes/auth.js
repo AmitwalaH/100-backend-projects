@@ -84,3 +84,5 @@ router.get("/profile", protect, async (req, res) => {
     res.status(500).json({ error: "Server error fetching profile" });
   }
 });
+
+module.exports = router;
