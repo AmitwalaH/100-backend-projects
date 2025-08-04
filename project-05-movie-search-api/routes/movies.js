@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 
 dotenv.config();
 
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const TMDB_API_KEY = process.env.TMDB_API_KEY; // Insert your TMDB API key here
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 router.get("/search", async (req, res) => {
