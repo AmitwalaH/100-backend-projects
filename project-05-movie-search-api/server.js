@@ -1,13 +1,10 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const app = express();
+dotenv.config();
 const movieRoutes = require("./routes/movies");
 
-dotenv.config();
-
 const PORT = process.env.PORT || 3000;
-const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
-const MOVIE_API_URL = "https://api.themoviedb.org/3/search/movie";
 
 app.use(express.json());
 
