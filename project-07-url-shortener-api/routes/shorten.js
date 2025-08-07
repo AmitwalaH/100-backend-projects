@@ -1,5 +1,9 @@
 const express = require("express");
-const { nanoid } = require("nanoid");
+let nanoid;
+import("nanoid").then((module) => {
+  nanoid = module.nanoid;
+});
+
 const router = express.Router();
 const Url = require("../models/Url");
 
@@ -7,15 +11,17 @@ const Url = require("../models/Url");
 router.post("/shorten", async (req, res) => {
   const { originalUrl } = req.body;
 
-  // Validate input
   if (!originalUrl) {
     return res.status(400).json({ error: "Original URL is required." });
   }
 
-  const shortCode = nanoid(8); // Generates an 8-character unique ID
+  // Check if nanoid is ready
+  if (!nanoid) {
+    return res.status(500).json({ error: "Service is not ready yet." });
+  }
+  const shortCode = nanoid(8);
 
   try {
-    // Create a new URL document
     const url = new Url({ originalUrl, shortCode });
     await url.save();
     res.status(201).json(url);
@@ -24,7 +30,5 @@ router.post("/shorten", async (req, res) => {
     res.status(500).json({ error: "Error creating shortened URL." });
   }
 });
-
-
-// Export the router
+//Export the router
 module.exports = router;
