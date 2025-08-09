@@ -12,6 +12,7 @@
     "start:p5": "node project-05-movie-search-api/server.js",
     "start:p6": "node project-06-user-roles-api/server.js",
     "start:p7": "node project-07-url-shortener-api/server.js",
+    "start:p8": "node project-08-recipe-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
