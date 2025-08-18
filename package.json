@@ -13,6 +13,7 @@
     "start:p6": "node project-06-user-roles-api/server.js",
     "start:p7": "node project-07-url-shortener-api/server.js",
     "start:p8": "node project-08-recipe-api/server.js",
+    "start:p9": "node project-09-quiz-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
