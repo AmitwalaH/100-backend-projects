@@ -8,11 +8,11 @@ dotenv.config();
 
 const authRoutes = require("./routes/auth");
 const quizRoutes = require("./routes/quiz");
-x
+
 app.use(express.json());
 app.use(cors());
 
-const MONGODB_URI = process.env.MONGO_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,

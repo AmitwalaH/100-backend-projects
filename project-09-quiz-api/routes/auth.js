@@ -2,44 +2,35 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const { protect } = require("../middleware/auth");
-const {
-  validateUserRegistration,
-  validateUserLogin,
-  checkDuplicateUser,
-} = require("../utils/validation");
 
-// User Registration Route
-router.post(
-  "/register",
-  validateUserRegistration,
-  checkDuplicateUser,
-  async (req, res) => {
-    try {
-      const { username, email, password } = req.body;
-      const user = new User({ username, email, password });
-      await user.save();
-      const token = user.generateAuthToken();
-      res.status(201).json({
-        message: "User registered successfully",
-        token: token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-        },
-      });
-    } catch (error) {
-      console.error("Registration error:", error);
-      res.status(500).json({ error: "Server error during registration" });
-    }
+// POST /api/auth/register
+router.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const user = new User({ username, email, password });
+    await user.save();
+    const token = user.generateAuthToken();
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Server error during registration" });
   }
-);
+});
 
-// User Login Route
-router.post("/login", validateUserLogin, async (req, res) => {
+// POST /api/auth/login
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
@@ -50,15 +41,16 @@ router.post("/login", validateUserLogin, async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-    const token = user.generateAuthToken();
 
+    const token = user.generateAuthToken();
     res.status(200).json({
       message: "User logged in successfully",
-      token: token,
+      token,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -67,7 +59,7 @@ router.post("/login", validateUserLogin, async (req, res) => {
   }
 });
 
-// User Profile Route (Protected)
+// GET /api/auth/profile
 router.get("/profile", protect, async (req, res) => {
   try {
     const user = req.user;
@@ -77,6 +69,7 @@ router.get("/profile", protect, async (req, res) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {

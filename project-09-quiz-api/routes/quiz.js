@@ -56,10 +56,10 @@ router.post("/answer", async (req, res) => {
 //   (for authenticated users)
 router.post("/add-question", protect, async (req, res) => {
   try {
-    const { text, choices, correctAnswer } = req.body;
+    const { question, choices, correctAnswer } = req.body;
     
     const newQuestion = new Question({
-      text,
+      question,
       choices,
       correctAnswer
     });

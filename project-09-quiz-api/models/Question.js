@@ -5,17 +5,17 @@ const QuestionSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  options: {
+  choices: {
     type: [String],
     required: true,
     validate: [arrayLimit, "{PATH} must have at least 2 options"],
   },
-  answer: {
+  correctAnswer: {
     type: String,
     required: true,
     validate: {
       validator: function (v) {
-        return this.options.includes(v);
+        return this.choices.includes(v);
       },
       message: (props) => `${props.value} is not a valid answer option!`,
     },
