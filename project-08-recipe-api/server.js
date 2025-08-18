@@ -27,7 +27,7 @@ mongoose
 
 // --- Route Mounting ---
 app.use("/api/auth", authRoutes);
-app.use("/api/recipes", recipeRoutes);
+app.use("/api", recipeRoutes);
 
 // --- Root Route ---
 app.get("/", (req, res) => {
