@@ -17,6 +17,7 @@
     "start:p10": "node project-10-event-scheduler-api/server.js",
     "start:p11": "node project-11-encryption-api/server.js",
     "start:p12": "node project-12-stock-ticker/server.js",
+    "start:p13": "node project-13-cloudinary-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
