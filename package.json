@@ -21,6 +21,7 @@
     "start:p14": "node project-14-web-scraper-api/server.js",
     "start:p15": "node project-15-chat-api/server.js",
     "start:p16": "node project-16-polling-api/server.js",
+    "start:p17": "node project-17-photo-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -9,6 +9,12 @@ const photosRouter = require('./routes/photos');
 const app = express();
 dotenv.config();
 
+const fs = require('fs');
+
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
 
 app.use(express.json()); 
 app.use(cors()); 
