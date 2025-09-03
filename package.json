@@ -24,6 +24,7 @@
     "start:p17": "node project-17-photo-api/server.js",
     "start:p18": "node project-18-advanced-api/server.js",
     "start:p19": "node project-19-comments-api/server.js",
+    "start:p20": "node project-20-caching-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
