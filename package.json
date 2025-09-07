@@ -26,6 +26,7 @@
     "start:p19": "node project-19-comments-api/server.js",
     "start:p20": "node project-20-caching-api/server.js",
     "start:p21": "node project-21-microservices-gateway/server.js",
+    "start:p22": "node project-22-api-docs/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
