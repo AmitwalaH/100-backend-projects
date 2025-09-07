@@ -1,0 +1,122 @@
+openapi: 3.0.0
+info:
+  title: Simple Blog API
+  description: A basic CRUD API for managing blog posts.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+tags:
+  - name: Posts
+    description: Endpoints for managing blog posts
+
+paths:
+  /posts:
+    get:
+      tags:
+        - Posts
+      summary: Get all posts
+      description: Retrieve a list of all blog posts from the database.
+      responses:
+        "200":
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Post"
+    post:
+      tags:
+        - Posts
+      summary: Create a new post
+      description: Create a new post with a title and content.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+              required:
+                - title
+                - content
+      responses:
+        "201":
+          description: The created post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          description: Invalid input
+
+  /posts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the post to retrieve or delete
+    get:
+      tags:
+        - Posts
+      summary: Get a single post
+      description: Retrieve a single post by its ID.
+      responses:
+        "200":
+          description: The post data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: Post not found
+    delete:
+      tags:
+        - Posts
+      summary: Delete a post
+      description: Delete a post by its ID.
+      responses:
+        "200":
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Post not found
+
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        _id: "65f3a0a3a7b1c3d4e5f6a7b8"
+        title: "My First Blog Post"
+        content: "This is the content of my first post."
+        createdAt: "2025-09-07T12:00:00Z"
+        updatedAt: "2025-09-07T12:00:00Z"
