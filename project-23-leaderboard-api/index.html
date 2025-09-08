@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-time Leaderboard</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .leaderboard-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      #leaderboard-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .score-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+      }
+      .score-item:nth-child(1) {
+        background-color: #ffd700;
+        font-weight: bold;
+      }
+      .score-item:nth-child(2) {
+        background-color: #c0c0c0;
+      }
+      .score-item:nth-child(3) {
+        background-color: #cd7f32;
+      }
+      .player-name {
+        font-weight: 600;
+        color: #555;
+      }
+      .player-score {
+        font-weight: bold;
+        color: #1a73e8;
+      }
+      #last-updated {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="leaderboard-container">
+      <h1>🏆 Real-time Leaderboard</h1>
+      <ul id="leaderboard-list">
+        <li class="score-item">Loading...</li>
+      </ul>
+      <p id="last-updated">Last updated: Never</p>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const leaderboardList = document.getElementById("leaderboard-list");
+      const lastUpdated = document.getElementById("last-updated");
+      const socket = io();
+
+      socket.on("leaderboardUpdate", (data) => {
+        console.log("Received new leaderboard data:", data);
+        updateLeaderboard(data);
+      });
+
+      function updateLeaderboard(scores) {
+        leaderboardList.innerHTML = "";
+        if (scores.length === 0) {
+          leaderboardList.innerHTML =
+            '<li class="score-item">No scores yet. Be the first!</li>';
+          return;
+        }
+
+        scores.forEach((score) => {
+          const li = document.createElement("li");
+          li.classList.add("score-item");
+          li.innerHTML = `
+                    <span class="player-name">${score.userId.username}</span>
+                    <span class="player-score">${score.score}</span>
+                `;
+          leaderboardList.appendChild(li);
+        });
+
+        lastUpdated.textContent =
+          "Last updated: " + new Date().toLocaleTimeString();
+      }
+    </script>
+  </body>
+</html>
