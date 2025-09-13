@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat with Rooms</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+      }
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        padding: 15px;
+        background-color: #1890ff;
+        color: white;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+      .messages {
+        flex-grow: 1;
+        padding: 20px;
+        overflow-y: auto;
+        list-style-type: none;
+        margin: 0;
+      }
+      .message-bubble {
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        line-height: 1.4;
+        max-width: 70%;
+        word-wrap: break-word;
+      }
+      .message-bubble.sent {
+        background-color: #1890ff;
+        color: white;
+        margin-left: auto;
+      }
+      .message-bubble.received {
+        background-color: #e4e6eb;
+        color: #333;
+      }
+      .message-meta {
+        font-size: 0.8em;
+        color: #999;
+        margin-top: -5px;
+        margin-bottom: 5px;
+      }
+      .form-container {
+        padding: 10px;
+        display: flex;
+        background-color: #f9f9f9;
+        border-top: 1px solid #ddd;
+      }
+      .form-container input {
+        flex-grow: 1;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        padding: 10px 15px;
+        margin-right: 10px;
+      }
+      .form-container button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #1890ff;
+        color: white;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+      .room-selection-container {
+        padding: 20px;
+        text-align: center;
+        background-color: #f9f9f9;
+      }
+      .room-selection-container input {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+      }
+      .room-selection-container button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #52c41a;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="header">Simple Broadcast Chat</div>
+      <div id="room-selection" class="room-selection-container">
+        <input type="text" id="username" placeholder="Enter your username" />
+        <input
+          type="text"
+          id="roomName"
+          placeholder="Enter room name"
+          value="general"
+        />
+        <button id="joinButton">Join</button>
+      </div>
+      <ul class="messages" id="messages"></ul>
+      <form id="form" class="form-container hidden">
+        <input id="input" autocomplete="off" placeholder="Type a message..." />
+        <button>Send</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const roomSelection = document.getElementById("room-selection");
+      const joinButton = document.getElementById("joinButton");
+      const usernameInput = document.getElementById("username");
+      const roomNameInput = document.getElementById("roomName");
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+      let username = "";
+      let room = "";
+
+      joinButton.addEventListener("click", () => {
+        if (usernameInput.value && roomNameInput.value) {
+          username = usernameInput.value;
+          room = roomNameInput.value;
+          roomSelection.classList.add("hidden");
+          form.classList.remove("hidden");
+
+          const socket = io();
+          socket.emit("joinRoom", room);
+
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (input.value) {
+              socket.emit("message", { user: username, text: input.value });
+              input.value = "";
+            }
+          });
+
+          socket.on("message", (msg) => {
+            const item = document.createElement("li");
+            item.classList.add("message-bubble");
+            if (msg.user === username) {
+              item.classList.add("sent");
+            } else {
+              item.classList.add("received");
+            }
+            item.innerHTML = `<div class="message-meta"><strong>${msg.user}</strong></div>${msg.text}`;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
