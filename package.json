@@ -30,6 +30,7 @@
     "start:p23": "node project-23-leaderboard-api/server.js",
     "start:p24": "node project-24-broadcast-server/server.js",
     "start:p25": "node project-25-weather-api/server.js",
+    "start:p26": "node project-26-workout-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
