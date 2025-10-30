@@ -1,4 +1,4 @@
-const { express } = require("express");
+const express = require("express");
 const dotenv = require("dotenv");
 require("./queue/worker"); // Start the worker
 const jobsRouter = require("./routes/jobs");
@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use("api/jobs", jobsRouter);
+app.use("/api/jobs", jobsRouter);
 
 // Starting the server
 app.listen(PORT, () => {
