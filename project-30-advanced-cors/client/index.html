@@ -48,18 +48,71 @@
   <body>
     <div class="container">
       <h1>CORS Policy Test Client</h1>
-      <p>Client Origin: <code>file:// or http://127.0.0.1:5500</code></p>
+      <p>Client Origin: <code id="client-origin">Checking...</code></p>
       <p>API Target: <code>http://localhost:3000/api</code></p>
       <hr class="my-4" />
 
       <div>
         <h2>Test Requests:</h2>
-        <!-- Note: These buttons will do nothing without JavaScript -->
-        <button id="get-btn">Test GET (Simple)</button>
-        <button id="post-btn">Test POST (Preflight)</button>
+        <button id="get-btn" onclick="sendRequest('GET')">
+          Test GET (Simple)
+        </button>
+        <button id="post-btn" onclick="sendRequest('POST')">
+          Test POST (Preflight)
+        </button>
       </div>
 
       <pre id="response-output">Awaiting response...</pre>
     </div>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+      const output = document.getElementById("response-output");
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("client-origin").textContent =
+          window.location.origin;
+      });
+
+      function logResponse(data, status, error = false) {
+        let log = `STATUS: ${status}\n`;
+
+        if (error) {
+          log += `ERROR: The browser has blocked the request . \nCheck your browser console.\n`;
+        } else {
+          log += JSON.stringify(data, null, 2);
+        }
+        output.textContent = log;
+      }
+
+      async function sendRequest(method) {
+        output.textContent = `Sending ${method} request to server...`;
+
+        try {
+          const endpoint = method === "GET" ? "/simple" : "/protected";
+
+          const response = await fetch(API_URL + endpoint, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer test_token_123",
+            },
+            body:
+              method === "POST"
+                ? JSON.stringify({ action: "validate" })
+                : undefined,
+          });
+
+          const data = await response.json();
+          logResponse(data, response.status, false);
+        } catch (error) {
+          logResponse(null, "BLOCKED", true);
+          console.error(
+            "CORS Failure: The browser blocked the request because the server did not send the correct CORS headers.",
+            error
+          );
+        }
+      }
+    </script>
   </body>
 </html>
