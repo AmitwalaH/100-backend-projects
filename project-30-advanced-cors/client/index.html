@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple CORS Tester</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        padding: 10px 15px;
+        margin-right: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      #get-btn {
+        background-color: #4caf50;
+        color: white;
+      }
+      #post-btn {
+        background-color: #f44336;
+        color: white;
+      }
+      #response-output {
+        margin-top: 20px;
+        padding: 10px;
+        background: #333;
+        color: #0f0;
+        font-family: monospace;
+        white-space: pre-wrap;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>CORS Policy Test Client</h1>
+      <p>Client Origin: <code>file:// or http://127.0.0.1:5500</code></p>
+      <p>API Target: <code>http://localhost:3000/api</code></p>
+      <hr class="my-4" />
+
+      <div>
+        <h2>Test Requests:</h2>
+        <!-- Note: These buttons will do nothing without JavaScript -->
+        <button id="get-btn">Test GET (Simple)</button>
+        <button id="post-btn">Test POST (Preflight)</button>
+      </div>
+
+      <pre id="response-output">Awaiting response...</pre>
+    </div>
+  </body>
+</html>
