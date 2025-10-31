@@ -34,6 +34,7 @@
     "start:p27": "node project-27-redis-api/server.js",
     "start:p28": "node project-28-redis-hash-api/server.js",
     "start:p29": "node project-29-job-processor/server.js",
+    "start:p30": "node project-30-advanced-cors/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
