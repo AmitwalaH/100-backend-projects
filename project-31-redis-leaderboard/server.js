@@ -1,0 +1,47 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const Redis = require("ioredis");
+const authRouter = require("./routes/auth");
+
+const scoresRouter = require("./routes/scores");
+
+const app = express();
+dotenv.config();
+
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGO_URI;
+const REDIS_HOST = process.env.REDIS_HOST || "127.0.0.1";
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+
+const redisClient = new Redis({
+  host: REDIS_HOST,
+  port: REDIS_PORT,
+});
+
+redisClient.on("connect", () => {
+  console.log("Redis client connected successfully!");
+});
+
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
+
+app.use(express.json());
+app.use(cors());
+
+app.use("/api/scores", scoresRouter(redisClient));
+app.use("/api/auth", authRouter);
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Redis Sorted Set Leaderboard API!");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
