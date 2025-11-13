@@ -3,7 +3,7 @@ const router = express.Router();
 const Author = require("../models/Author");
 
 // POST /api/post
-router.post("/api/post", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const author = req.body;
     author = new Author();
@@ -15,7 +15,7 @@ router.post("/api/post", async (req, res) => {
 });
 
 //GET /api/get
-router.get("/api/get", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const author = await Author.find();
     res.json(author);
