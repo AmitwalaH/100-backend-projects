@@ -37,6 +37,7 @@
     "start:p30": "node project-30-advanced-cors/server.js",
     "start:p31": "node project-31-redis-leaderboard/server.js",
     "start:p32": "node project-32-rate-limiter/server.js",
+    "start:p33": "node project-33-book-author-api/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
