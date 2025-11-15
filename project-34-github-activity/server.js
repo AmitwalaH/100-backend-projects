@@ -1,7 +1,7 @@
-const fetch = require("node-fetch");
+
 require("dotenv").config();
 
-const GITHUB_USERNAME = "your-target-username";
+const GITHUB_USERNAME = "AmitwalaH";
 const GITHUB_PAT = process.env.GITHUB_PAT;
 const API_URL = `https://api.github.com/users/${GITHUB_USERNAME}/events/public`;
 

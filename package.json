@@ -38,6 +38,7 @@
     "start:p31": "node project-31-redis-leaderboard/server.js",
     "start:p32": "node project-32-rate-limiter/server.js",
     "start:p33": "node project-33-book-author-api/server.js",
+    "start:p34": "node project-34-github-activity/server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -62,7 +63,7 @@
     "multer": "^2.0.2",
     "nanoid": "^5.1.5",
     "node-cache": "^5.1.2",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
     "socket.io": "^4.8.1",
