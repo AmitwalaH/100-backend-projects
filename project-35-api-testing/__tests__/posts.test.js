@@ -5,7 +5,7 @@ const Post = require("../models/Post");
 require("dotenv").config({ path: "./.env.test" });
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(process.env.MONGODB_URI);
 });
 
 afterAll(async () => {

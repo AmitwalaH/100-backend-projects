@@ -4,13 +4,14 @@ const Post = require("../models/Post");
 
 // POST /api/posts
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { title, content } = req.body;
-    const newPost = new Post({ title, content });
-    newPost.save();
-    res.status(201).send("Post created successfully!");
+    const post = new Post(req.body);
+    await post.save();
+    const savedPost = await Post.create(req.body);
+    res.status(201).json(savedPost);
   } catch (error) {
+    // ...
     res.status(500).send("Error creating post: " + error.message);
   }
 });
