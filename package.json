@@ -40,6 +40,7 @@
     "start:p33": "node project-33-book-author-api/server.js",
     "start:p34": "node project-34-github-activity/server.js",
     "start:p35": "node project-35-api-testing/server.js",
+    "start:p36": "node project-36-data-analysis/server.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles --verbose --forceExit"
   },
