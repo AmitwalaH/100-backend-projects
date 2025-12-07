@@ -1,38 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const sentiment = require("sentiment");
+const express = require('express');
+const dotenv = require('dotenv');
 
-router.post("/sentiment", (req, res) => {
-  try {
-    const { text } = req.body;
+const analyzeRouter = require('./routes/analyze'); 
+dotenv.config();
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-    if (!text) {
-      return res
-        .status(400)
-        .json({ error: "Text field is required for analysis." });
-    }
+app.use(express.json());
+app.use('/api/analyze', analyzeRouter);
 
-    const result = sentiment(text);
-
-    // Determine the general tone based on the score
-    let tone = "Neutral";   
-    if (result.score > 0) {
-      tone = "Positive";
-    } else if (result.score < 0) {
-      tone = "Negative";
-    }
-
-    // Send back the analysis report
-    res.json({
-      text: text,
-      score: result.score,
-      tone: tone,
-      analysis: result,
-    });
-  } catch (error) {
-    console.error("Sentiment analysis failed:", error);
-    res.status(500).json({ error: "Server error during analysis." });
-  }
+app.get('/', (req, res) => {
+    res.send('Welcome to the Simple Sentiment Analysis API!');
 });
 
-module.exports = router;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
