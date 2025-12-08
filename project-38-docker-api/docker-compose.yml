@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  # Define the service name
+  weather-api:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+      
+    # Restart Policy: Automatically restart if it crashes
+    restart: unless-stopped
