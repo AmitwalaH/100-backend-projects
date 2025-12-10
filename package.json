@@ -43,6 +43,7 @@
     "start:p36": "node project-36-data-analysis/server.js",
     "start:p37": "node project-37-sentiment-api/server.js",
     "start:p38": "node project-project-38-docker-api/server.js",
+    "start:p39": "node project-39-modular-logging/server.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles --verbose --forceExit"
   },
