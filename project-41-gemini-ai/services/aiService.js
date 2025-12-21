@@ -13,7 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const getGeminiResponse = async (userPrompt) => {
   try {
     // Select the "gemini-1.5-flash" model.
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Generate the content
     const result = await model.generateContent(userPrompt);
