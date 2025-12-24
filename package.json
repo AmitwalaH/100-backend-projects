@@ -46,6 +46,7 @@
     "start:p39": "node project-39-modular-logging/server.js",
     "start:p40": "node project-40-aws-s3/server.js",
     "start:p41": "node project-41-gemini-ai/server.js",
+    "start:p42": "node project-42-ai-memory/server.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles --verbose --forceExit"
   },
