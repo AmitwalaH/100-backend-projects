@@ -1,4 +1,6 @@
-const yahooFinance = require("yahoo-finance2").default;
+const YahooFinance = require("yahoo-finance2").default;
+
+const yahooFinance = new YahooFinance();
 
 const getStockData = async (query) => {
   try {
@@ -40,5 +42,6 @@ const getStockData = async (query) => {
   }
 };
 
-
-getStockData("Reliance");
+module.exports = {
+  getStockData
+};

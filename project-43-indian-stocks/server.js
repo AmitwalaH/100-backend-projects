@@ -1,11 +1,11 @@
 const express = require("express");
-const stockRoutes = require("./routes/stockRoutes");
+const marketRoutes = require("./routes/marketRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use("/api/stocks", stockRoutes);
+app.use("/api/stocks", marketRoutes);
 app.get("/", (req, res) => {
   res.json({
     status: "online",

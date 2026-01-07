@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { fetchStockData } = require("../services/marketService");
+const { getStockData } = require("../services/marketService");
 
 // GET /api/stocks/:name
 router.get("/:name", async (req, res) => {
   try {
-    const data = await fetchStockData(req.params.name);
+    const data = await getStockData(req.params.name);
     res.json({
       success: true,
       data,
