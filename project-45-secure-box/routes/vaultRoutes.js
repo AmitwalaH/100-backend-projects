@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { saveSecret, getSecret } = require("../services/vaultController");
+const { saveSecret, getSecret } = require("../services/vaultService");
 
 router.post("/add", (req, res) => {
   try {
