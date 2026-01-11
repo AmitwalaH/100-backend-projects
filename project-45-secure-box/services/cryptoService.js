@@ -28,3 +28,5 @@ const decrypt = (encryptedObj) => {
 
   return decrypted;
 };
+
+module.exports = { encrypt, decrypt };
