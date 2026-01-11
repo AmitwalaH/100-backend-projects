@@ -49,6 +49,7 @@
     "start:p42": "node project-42-ai-memory/server.js",
     "start:p43": "node project-43-indian-stocks/server.js",
     "start:p44": "node project-44-meme-maker/server.js",
+    "start:p45": "node project-45-secure-box/server.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles --verbose --forceExit"
   },
