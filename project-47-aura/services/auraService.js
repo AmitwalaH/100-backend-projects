@@ -1,7 +1,9 @@
 const fetch = require("node-fetch");
 const memoryService = require("./memoryService");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const apiKey = "";
+const apiKey = process.env.GEMINI_API_KEY || "";
 
 const PERSONAS = {
   detective:

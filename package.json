@@ -51,6 +51,7 @@
     "start:p44": "node project-44-meme-maker/server.js",
     "start:p45": "node project-45-secure-box/server.js",
     "start:p46": "node project-46-insight-stream/server.js",
+    "start:p47": "node project-47-aura/server.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles --verbose --forceExit"
   },
