@@ -1,113 +1,130 @@
-<!--Upgrade: websocket-->
-
 <!doctype html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexus Tester</title>
-    <script src="/socket.io/socket.io.js"></script>
+    <title>Nexus Coordination Dashboard</title>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body class="bg-slate-900 text-white font-mono p-8">
+
+  <body class="bg-slate-950 text-slate-300 font-mono p-4 md:p-10">
     <div
-      class="max-w-xl mx-auto border border-slate-700 rounded-lg overflow-hidden shadow-2xl"
+      class="max-w-2xl mx-auto border border-slate-800 rounded-xl overflow-hidden shadow-2xl"
     >
+      <!-- HEADER -->
       <div
-        class="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center"
+        class="bg-slate-900 p-4 border-b border-slate-800 flex justify-between items-center"
       >
-        <h1 class="text-blue-400 font-bold">NEXUS_CLIENT_v1.0</h1>
-        <div id="status" class="w-3 h-3 rounded-full bg-red-500"></div>
+        <h1 class="text-blue-500 font-bold">NEXUS_v1.0</h1>
+        <div id="led" class="w-3 h-3 rounded-full bg-red-600"></div>
       </div>
 
+      <!-- TERMINAL -->
       <div
-        id="logs"
-        class="h-64 overflow-y-auto p-4 space-y-2 text-sm bg-black/50"
+        id="terminal"
+        class="h-80 overflow-y-auto p-4 space-y-2 text-sm bg-black/40"
       >
-        <p class="text-slate-500">> System initialized...</p>
+        <p class="text-slate-600 italic">Initializing handshake...</p>
       </div>
 
-      <div class="p-4 bg-slate-800 space-y-4">
+      <!-- CONTROLS -->
+      <div class="p-4 bg-slate-900/50 border-t border-slate-800 space-y-4">
         <div class="flex gap-2">
           <input
-            id="roomInput"
+            id="room"
             type="text"
-            placeholder="Room Name"
-            class="bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm w-full outline-none focus:border-blue-500"
+            placeholder="CHANNEL_ID"
+            class="flex-1 bg-black border border-slate-700 rounded px-3 py-2 text-sm outline-none focus:border-blue-500"
           />
           <button
-            onclick="joinRoom()"
-            class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm font-bold transition-colors"
+            id="syncBtn"
+            class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded text-xs font-bold transition-all"
           >
-            JOIN
+            SYNC
           </button>
         </div>
+
         <div class="flex gap-2">
           <input
-            id="msgInput"
+            id="msg"
             type="text"
-            placeholder="Transmit data..."
-            class="bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm w-full outline-none focus:border-blue-500"
+            placeholder="TRANSMIT_DATA"
+            class="flex-1 bg-black border border-slate-700 rounded px-3 py-2 text-sm outline-none focus:border-green-500"
           />
           <button
-            onclick="sendData()"
-            class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm font-bold transition-colors"
+            id="pushBtn"
+            class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded text-xs font-bold transition-all"
           >
-            SEND
+            PUSH
           </button>
         </div>
       </div>
     </div>
 
     <script>
-      const socket = io();
-      const logs = document.getElementById("logs");
-      const status = document.getElementById("status");
-      let currentRoom = "";
+      const socket = io("http://localhost:3000");
 
-      const addLog = (msg, color = "text-slate-300") => {
+      const terminal = document.getElementById("terminal");
+      const led = document.getElementById("led");
+      const syncBtn = document.getElementById("syncBtn");
+      const pushBtn = document.getElementById("pushBtn");
+
+      let activeRoom = "";
+
+      const log = (msg, color = "text-slate-400") => {
         const p = document.createElement("p");
         p.className = color;
-        p.innerText = `> ${msg}`;
-        logs.appendChild(p);
-        logs.scrollTop = logs.scrollHeight;
+        p.innerHTML = `<span class="opacity-30 mr-2">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+        terminal.appendChild(p);
+        terminal.scrollTop = terminal.scrollHeight;
       };
 
+      // CONNECTION EVENTS
       socket.on("connect", () => {
-        status.classList.replace("bg-red-500", "bg-green-500");
-        addLog("Connected to Nexus Engine.", "text-green-400");
+        led.classList.replace("bg-red-600", "bg-green-500");
+        log("Engine synchronized.", "text-green-500");
       });
 
       socket.on("disconnect", () => {
-        status.classList.replace("bg-green-500", "bg-red-500");
-        addLog("Disconnected from engine.", "text-red-400");
+        led.classList.replace("bg-green-500", "bg-red-600");
+        log("Connection lost.", "text-red-500");
       });
 
+      // ROOM MESSAGE EVENT
       socket.on("room-update", (data) => {
-        addLog(
-          `[${data.sender.substring(0, 4)}] ${data.content}`,
-          "text-blue-300",
+        const isMe = data.sender === socket.id;
+        log(
+          `<strong>${isMe ? "YOU" : "NODE"}</strong>: ${data.content}`,
+          "text-blue-400",
         );
       });
 
-      socket.on("status-update", (data) => {
-        addLog(data.message, "text-yellow-500 italic");
+      // NOTIFICATIONS (Matches backend)
+      socket.on("notification", (data) => {
+        log(data.message, "text-yellow-500 italic");
       });
 
-      function joinRoom() {
-        const room = document.getElementById("roomInput").value;
+      // SYNC FUNCTION
+      syncBtn.addEventListener("click", () => {
+        const room = document.getElementById("room").value.trim();
         if (!room) return;
-        currentRoom = room;
-        socket.emit("join-room", room);
-        addLog(`Joined room: ${room}`, "text-yellow-400");
-      }
 
-      function sendData() {
-        const msg = document.getElementById("msgInput").value;
-        if (!msg || !currentRoom) return;
-        socket.emit("send-data", { room: currentRoom, data: msg });
-        document.getElementById("msgInput").value = "";
-      }
+        activeRoom = room;
+        socket.emit("join-room", activeRoom);
+        log(`Channel locked: ${activeRoom}`, "text-yellow-500");
+      });
+
+      // PUSH FUNCTION
+      pushBtn.addEventListener("click", () => {
+        const msg = document.getElementById("msg").value.trim();
+        if (!msg || !activeRoom) return;
+
+        socket.emit("send-data", {
+          room: activeRoom,
+          data: msg,
+        });
+
+        document.getElementById("msg").value = "";
+      });
     </script>
   </body>
 </html>
