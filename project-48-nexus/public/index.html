@@ -1,1 +1,113 @@
 <!--Upgrade: websocket-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus Tester</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-900 text-white font-mono p-8">
+    <div
+      class="max-w-xl mx-auto border border-slate-700 rounded-lg overflow-hidden shadow-2xl"
+    >
+      <div
+        class="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center"
+      >
+        <h1 class="text-blue-400 font-bold">NEXUS_CLIENT_v1.0</h1>
+        <div id="status" class="w-3 h-3 rounded-full bg-red-500"></div>
+      </div>
+
+      <div
+        id="logs"
+        class="h-64 overflow-y-auto p-4 space-y-2 text-sm bg-black/50"
+      >
+        <p class="text-slate-500">> System initialized...</p>
+      </div>
+
+      <div class="p-4 bg-slate-800 space-y-4">
+        <div class="flex gap-2">
+          <input
+            id="roomInput"
+            type="text"
+            placeholder="Room Name"
+            class="bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm w-full outline-none focus:border-blue-500"
+          />
+          <button
+            onclick="joinRoom()"
+            class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm font-bold transition-colors"
+          >
+            JOIN
+          </button>
+        </div>
+        <div class="flex gap-2">
+          <input
+            id="msgInput"
+            type="text"
+            placeholder="Transmit data..."
+            class="bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm w-full outline-none focus:border-blue-500"
+          />
+          <button
+            onclick="sendData()"
+            class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm font-bold transition-colors"
+          >
+            SEND
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const socket = io();
+      const logs = document.getElementById("logs");
+      const status = document.getElementById("status");
+      let currentRoom = "";
+
+      const addLog = (msg, color = "text-slate-300") => {
+        const p = document.createElement("p");
+        p.className = color;
+        p.innerText = `> ${msg}`;
+        logs.appendChild(p);
+        logs.scrollTop = logs.scrollHeight;
+      };
+
+      socket.on("connect", () => {
+        status.classList.replace("bg-red-500", "bg-green-500");
+        addLog("Connected to Nexus Engine.", "text-green-400");
+      });
+
+      socket.on("disconnect", () => {
+        status.classList.replace("bg-green-500", "bg-red-500");
+        addLog("Disconnected from engine.", "text-red-400");
+      });
+
+      socket.on("room-update", (data) => {
+        addLog(
+          `[${data.sender.substring(0, 4)}] ${data.content}`,
+          "text-blue-300",
+        );
+      });
+
+      socket.on("status-update", (data) => {
+        addLog(data.message, "text-yellow-500 italic");
+      });
+
+      function joinRoom() {
+        const room = document.getElementById("roomInput").value;
+        if (!room) return;
+        currentRoom = room;
+        socket.emit("join-room", room);
+        addLog(`Joined room: ${room}`, "text-yellow-400");
+      }
+
+      function sendData() {
+        const msg = document.getElementById("msgInput").value;
+        if (!msg || !currentRoom) return;
+        socket.emit("send-data", { room: currentRoom, data: msg });
+        document.getElementById("msgInput").value = "";
+      }
+    </script>
+  </body>
+</html>
