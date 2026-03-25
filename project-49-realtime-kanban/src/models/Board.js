@@ -10,7 +10,7 @@ const boardSchema = new mongoose.Schema({
     required: true,
   },
   columns: {
-    type: String,
+    type: [String],
     required: true,
     enum: ["To Do", "In Progress", "Done"],
   },
