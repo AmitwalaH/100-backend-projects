@@ -54,6 +54,7 @@
     "start:p47": "node project-47-aura/server.js",
     "start:p48": "node project-48-nexus/server.js",
     "start:p49": "node project-49-realtime-kanban/server.js",
+    "start:p50": "node project-50-markdown-notes/server.js",
     "dev": "nodemon server.js",
     "test": "jest --detectOpenHandles --verbose --forceExit"
   },
