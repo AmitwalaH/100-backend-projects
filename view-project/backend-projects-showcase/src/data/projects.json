@@ -1,0 +1,512 @@
+[
+  {
+    "id": 1,
+    "title": "Blog API",
+    "description": "Full-featured REST API for a blogging platform with authentication, CRUD operations, comments and post management.",
+    "tech": ["Node.js", "Express", "MongoDB", "JWT"],
+    "category": "Auth",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-01-blog-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 2,
+    "title": "Products API",
+    "description": "RESTful API for product catalog management with full CRUD, filtering, sorting and pagination support.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "E-commerce",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-02-products-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 3,
+    "title": "File Upload API",
+    "description": "Secure file upload service supporting multiple file types with validation, storage and retrieval endpoints.",
+    "tech": ["Node.js", "Express", "Multer", "MongoDB"],
+    "category": "Storage",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-03-file-upload-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 4,
+    "title": "User Auth API",
+    "description": "Complete user authentication system with registration, login, JWT tokens, password hashing and protected routes.",
+    "tech": ["Node.js", "Express", "MongoDB", "JWT", "bcrypt"],
+    "category": "Auth",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-04-user-auth-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 5,
+    "title": "Movie Search API",
+    "description": "Movie search and discovery API integrating with external movie databases, supporting search, filters and details.",
+    "tech": ["Node.js", "Express", "MongoDB", "REST"],
+    "category": "Search",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-05-movie-search-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 6,
+    "title": "User Roles API",
+    "description": "Role-based access control system with admin, moderator and user roles, permission guards and middleware.",
+    "tech": ["Node.js", "Express", "MongoDB", "JWT"],
+    "category": "Auth",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-06-user-roles-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 7,
+    "title": "URL Shortener API",
+    "description": "URL shortening service with custom aliases, click tracking, expiry dates and redirect analytics.",
+    "tech": ["Node.js", "Express", "MongoDB", "Redis"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-07-url-shortener-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 8,
+    "title": "Recipe API",
+    "description": "Recipe management API with ingredients, instructions, categories, search and user-specific recipe collections.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-08-recipe-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 9,
+    "title": "Quiz API",
+    "description": "Quiz platform backend with questions, multiple choice answers, scoring, leaderboards and timed sessions.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-09-quiz-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 10,
+    "title": "Event Scheduler API",
+    "description": "Event scheduling backend with calendar integration, reminders, RSVP management and recurring event support.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-10-event-scheduler-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 11,
+    "title": "Encryption API",
+    "description": "Data encryption and decryption service using AES and RSA algorithms, secure key management and hashing utilities.",
+    "tech": ["Node.js", "Express", "crypto"],
+    "category": "Security",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-11-encryption-api",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 12,
+    "title": "Stock Ticker",
+    "description": "Real-time stock price tracker with live market data, portfolio tracking and price alert notifications.",
+    "tech": ["Node.js", "Express", "WebSocket", "Redis"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-12-stock-ticker",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 13,
+    "title": "Cloudinary API",
+    "description": "Media management API with Cloudinary integration for image/video upload, transformation and CDN delivery.",
+    "tech": ["Node.js", "Express", "Cloudinary", "MongoDB"],
+    "category": "Storage",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-13-cloudinary-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 14,
+    "title": "Web Scraper API",
+    "description": "Web scraping service with Puppeteer/Cheerio, structured data extraction and scheduled scraping jobs.",
+    "tech": ["Node.js", "Express", "Cheerio", "Puppeteer"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-14-web-scraper-api",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 15,
+    "title": "Chat API",
+    "description": "Real-time chat backend with rooms, private messaging, online presence and message history using Socket.io.",
+    "tech": ["Node.js", "Express", "Socket.io", "MongoDB"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-15-chat-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 16,
+    "title": "Polling API",
+    "description": "Polling and voting platform with real-time vote counts, anonymous voting, expiry and result analytics.",
+    "tech": ["Node.js", "Express", "MongoDB", "Socket.io"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-16-polling-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 17,
+    "title": "Photo API",
+    "description": "Photo sharing platform API with album management, tagging, likes, comments and image processing.",
+    "tech": ["Node.js", "Express", "MongoDB", "Multer"],
+    "category": "Storage",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-17-photo-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 18,
+    "title": "Advanced API",
+    "description": "Production-grade REST API with advanced pagination, filtering, field selection, sorting and API versioning.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-18-advanced-api",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 19,
+    "title": "Comments API",
+    "description": "Nested comments system with threading, voting, moderation, soft delete and real-time updates.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-19-comments-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 20,
+    "title": "Caching API",
+    "description": "API with intelligent caching layer using Redis, cache invalidation strategies, TTL management and cache warming.",
+    "tech": ["Node.js", "Express", "Redis", "MongoDB"],
+    "category": "Performance",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-20-caching-api",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 21,
+    "title": "Microservices Gateway",
+    "description": "API gateway for microservices architecture with service discovery, load balancing, routing and auth middleware.",
+    "tech": ["Node.js", "Express", "Docker"],
+    "category": "Microservices",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-21-microservices-gateway",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 22,
+    "title": "API Docs",
+    "description": "Auto-generated API documentation system with Swagger/OpenAPI spec, interactive UI and Postman collection export.",
+    "tech": ["Node.js", "Express", "Swagger", "OpenAPI"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-22-api-docs",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 23,
+    "title": "Leaderboard API",
+    "description": "Game leaderboard service with real-time rankings, score updates, player stats and period-based leaderboards.",
+    "tech": ["Node.js", "Express", "Redis", "MongoDB"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-23-leaderboard-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 24,
+    "title": "Broadcast Server",
+    "description": "Server-sent events broadcast system with channels, subscriptions and real-time push notifications to clients.",
+    "tech": ["Node.js", "Express", "Socket.io", "Redis"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-24-broadcast-server",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 25,
+    "title": "Weather API",
+    "description": "Weather data aggregation API with current conditions, forecasts, location search and historical data integration.",
+    "tech": ["Node.js", "Express", "MongoDB", "REST"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-25-weather-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 26,
+    "title": "Workout API",
+    "description": "Fitness tracking API with workout plans, exercise library, progress logging and personal records tracking.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-26-workout-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 27,
+    "title": "Redis API",
+    "description": "Redis-backed API demonstrating strings, lists, sets, sorted sets and pub/sub with practical use cases.",
+    "tech": ["Node.js", "Express", "Redis"],
+    "category": "Performance",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-27-redis-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 28,
+    "title": "Redis Hash API",
+    "description": "Advanced Redis hash operations API with field management, batch updates and hash-based session storage.",
+    "tech": ["Node.js", "Express", "Redis"],
+    "category": "Performance",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-28-redis-hash-api",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 29,
+    "title": "Job Processor",
+    "description": "Background job processing system with Bull queues, job scheduling, retries, priorities and progress tracking.",
+    "tech": ["Node.js", "Express", "Bull", "Redis"],
+    "category": "Performance",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-29-job-processor",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 30,
+    "title": "Advanced CORS",
+    "description": "CORS configuration API demonstrating origin whitelisting, preflight handling, credentials and dynamic policy management.",
+    "tech": ["Node.js", "Express", "cors"],
+    "category": "Security",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-30-advanced-cors",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 31,
+    "title": "Redis Leaderboard",
+    "description": "High-performance leaderboard using Redis sorted sets with real-time rank updates, pagination and tie handling.",
+    "tech": ["Node.js", "Express", "Redis"],
+    "category": "Performance",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-31-redis-leaderboard",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 32,
+    "title": "Rate Limiter",
+    "description": "API rate limiting middleware with sliding window, token bucket and fixed window algorithms using Redis.",
+    "tech": ["Node.js", "Express", "Redis"],
+    "category": "Security",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-32-rate-limiter",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 33,
+    "title": "Book Author API",
+    "description": "Library management API with books, authors, genres, relationships, search and reading list features.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-33-book-author-api",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 34,
+    "title": "GitHub Activity",
+    "description": "GitHub activity tracker using the GitHub API — fetches user events, repos, contributions and commit history.",
+    "tech": ["Node.js", "Express", "GitHub API"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-34-github-activity",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 35,
+    "title": "API Testing",
+    "description": "Automated API test suite with Jest and Supertest covering unit tests, integration tests and coverage reports.",
+    "tech": ["Node.js", "Express", "Jest", "Supertest"],
+    "category": "Testing",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-35-api-testing",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 36,
+    "title": "Data Analysis",
+    "description": "Data analysis API that processes datasets, computes aggregations, trends, statistics and generates reports.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-36-data-analysis",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 37,
+    "title": "Sentiment API",
+    "description": "Text sentiment analysis service that classifies positive, negative and neutral sentiment from user-submitted text.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "AI",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-37-sentiment-api",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 38,
+    "title": "Docker API",
+    "description": "Fully containerised Express API with Docker and Docker Compose, multi-stage builds and environment management.",
+    "tech": ["Node.js", "Express", "Docker", "MongoDB"],
+    "category": "DevOps",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-38-docker-api",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 39,
+    "title": "Modular Logging",
+    "description": "Structured logging system with Winston, log levels, file rotation, request logging and error tracking integration.",
+    "tech": ["Node.js", "Express", "Winston", "Morgan"],
+    "category": "DevOps",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-39-modular-logging",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 40,
+    "title": "AWS S3",
+    "description": "AWS S3 integration API for file storage with pre-signed URLs, bucket management and access control policies.",
+    "tech": ["Node.js", "Express", "AWS S3", "MongoDB"],
+    "category": "Storage",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-40-aws-s3",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 41,
+    "title": "Gemini AI",
+    "description": "AI-powered API backend using Google Gemini for text generation, Q&A, summarisation and content analysis.",
+    "tech": ["Node.js", "Express", "Gemini AI", "MongoDB"],
+    "category": "AI",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-41-gemini-ai",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 42,
+    "title": "AI Memory",
+    "description": "AI conversation memory system that stores context, chat history and retrieves relevant past interactions for LLMs.",
+    "tech": ["Node.js", "Express", "MongoDB", "Gemini AI"],
+    "category": "AI",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-42-ai-memory",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 43,
+    "title": "Indian Stocks",
+    "description": "Indian stock market data API with NSE/BSE integration, live prices, historical data and portfolio tracking.",
+    "tech": ["Node.js", "Express", "MongoDB", "Redis"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-43-indian-stocks",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 44,
+    "title": "Meme Maker",
+    "description": "Meme generation API with image overlays, text rendering, template library and shareable output URLs.",
+    "tech": ["Node.js", "Express", "Canvas", "Cloudinary"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-44-meme-maker",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 45,
+    "title": "Secure Box",
+    "description": "Encrypted secure vault API for storing sensitive data with AES encryption, access tokens and audit logging.",
+    "tech": ["Node.js", "Express", "MongoDB", "crypto"],
+    "category": "Security",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-45-secure-box",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 46,
+    "title": "Insight Stream",
+    "description": "Analytics event streaming API that collects user events, aggregates insights and streams real-time dashboards.",
+    "tech": ["Node.js", "Express", "MongoDB", "Socket.io"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-46-insight-stream",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 47,
+    "title": "Aura",
+    "description": "Mood and wellness tracking API with daily check-ins, sentiment scoring, trend analysis and personalised insights.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-47-aura",
+    "liveDemo": "#",
+    "difficulty": "Intermediate"
+  },
+  {
+    "id": 48,
+    "title": "Nexus",
+    "description": "Developer hub API aggregating GitHub stats, NPM packages, project metrics and activity into a single feed.",
+    "tech": ["Node.js", "Express", "MongoDB", "GitHub API"],
+    "category": "Tools",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-48-nexus",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 49,
+    "title": "Realtime Kanban",
+    "description": "Real-time Kanban board backend with boards, columns, cards, drag-and-drop order sync and live collaboration.",
+    "tech": ["Node.js", "Express", "Socket.io", "MongoDB"],
+    "category": "Real-time",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-49-realtime-kanban",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  },
+  {
+    "id": 50,
+    "title": "Markdown Notes",
+    "description": "Markdown note-taking API with rich text storage, tags, search, versioning and notebook organisation.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "category": "CRUD",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-50-markdown-notes",
+    "liveDemo": "#",
+    "difficulty": "Beginner"
+  },
+  {
+    "id": 51,
+    "title": "Scalable Chat",
+    "description": "Horizontally scalable chat system with Redis pub/sub for multi-instance message broadcasting and Socket.io clustering.",
+    "tech": ["Node.js", "Express", "Socket.io", "Redis", "MongoDB"],
+    "category": "Microservices",
+    "github": "https://github.com/AmitwalaH/100-backend-projects/tree/main/project-51-scalable-chat",
+    "liveDemo": "#",
+    "difficulty": "Advanced"
+  }
+]
