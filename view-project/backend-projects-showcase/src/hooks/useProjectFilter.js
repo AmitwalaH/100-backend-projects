@@ -1,10 +1,6 @@
 import { useState, useMemo } from "react";
 import { filterProjects, getCategories } from "../utils/projects";
 
-/**
- * Encapsulates search + category filter state and derived data.
- * App and ProjectGrid don't need to know HOW filtering works.
- */
 export function useProjectFilter(projects) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
