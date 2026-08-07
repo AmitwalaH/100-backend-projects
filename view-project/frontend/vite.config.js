@@ -8,5 +8,8 @@ export default defineConfig({
       // Allows dev server to read demo.json files from sibling project-* folders
       allow: [".."],
     },
+    proxy: {
+      "/api": "http://localhost:4000",
+    },
   },
 });

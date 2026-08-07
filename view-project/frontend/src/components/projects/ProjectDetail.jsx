@@ -69,16 +69,20 @@ export default function ProjectDetail({
   const num = formatProjectNumber(project.id);
   const slug = project.title.toLowerCase().replace(/\s+/g, "-");
 
+  // Extract project folder slug for API calls: "blog-api", "url-shortener-api"
+  const projectSlug =
+    project.github
+      ?.match(/(project-[\w-]+)\/?$/)?.[1]
+      ?.replace(/^project-\d+-/, "") ?? slug;
+
   return (
     <div className="detail">
-      {/* AmitwalaH / blog-api */}
       <div className="detail-breadcrumb">
         <span className="detail-bc-author">AmitwalaH</span>
         <span className="detail-bc-sep"> / </span>
         <span className="detail-bc-repo">{slug}</span>
       </div>
 
-      {/* #01  INTERMEDIATE  Auth */}
       <div className="detail-meta-row">
         <span className="detail-num">#{num}</span>
         <span className={`detail-difficulty ${diffConfig.className}`}>
@@ -87,10 +91,8 @@ export default function ProjectDetail({
         <span className="detail-category-pill">{project.category}</span>
       </div>
 
-      {/* Description */}
       <p className="detail-tagline">{project.description}</p>
 
-      {/* ● Node.js | ● Express | ● MongoDB */}
       <div className="detail-tech-row">
         {project.tech.map((tag, i) => (
           <span key={tag} className="detail-tech-dot-item">
@@ -105,7 +107,6 @@ export default function ProjectDetail({
 
       <hr className="detail-divider" />
 
-      {/* Action buttons */}
       <div className="detail-actions">
         {showDemo ? (
           <a
@@ -131,12 +132,11 @@ export default function ProjectDetail({
         </a>
       </div>
 
-      {/* API Playground — only renders if demo.json exists for this project */}
-      {demo && <ProjectDemoPanel demo={demo} />}
+      {/* API Playground — real backend if available, captured fallback otherwise */}
+      {demo && <ProjectDemoPanel demo={demo} projectSlug={projectSlug} />}
 
       <hr className="detail-divider" />
 
-      {/* Prev / Next navigation */}
       <div className="detail-nav">
         {prevProject ? (
           <button

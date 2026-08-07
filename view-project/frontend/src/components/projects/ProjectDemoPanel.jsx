@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+// In dev: http://localhost:3001
+// In prod: set VITE_API_URL to your deployed backend URL
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
 const METHOD_COLORS = {
   GET: "#16a34a",
   POST: "#2563eb",
@@ -22,21 +26,66 @@ function StatusBadge({ status }) {
   );
 }
 
-function EndpointRunner({ endpoint }) {
-  const [state, setState] = useState("idle"); // idle | running | done
-
-  function handleRun() {
-    setState("running");
-    const delay = Math.max(endpoint.responseTimeMs ?? 400, 300);
-    setTimeout(() => setState("done"), delay);
-  }
+function EndpointRunner({ endpoint, projectSlug }) {
+  const [state, setState] = useState("idle"); // idle | running | done | error
+  const [result, setResult] = useState(null);
+  const [isLive, setIsLive] = useState(false);
 
   const hasRequestBody =
     endpoint.requestBody !== null && endpoint.requestBody !== undefined;
 
+  async function handleRun() {
+    setState("running");
+    setResult(null);
+
+    const start = Date.now();
+
+    try {
+      const res = await fetch(`${API_BASE}/api/demo/${projectSlug}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          method: endpoint.method,
+          path: endpoint.path,
+          body: endpoint.requestBody ?? {},
+        }),
+      });
+
+      const data = await res.json();
+      const ms = Date.now() - start;
+
+      if (data.fallback) {
+        // Backend has no sandbox for this project — show captured data
+        setResult({
+          status: endpoint.responseStatus,
+          body: endpoint.responseBody,
+          ms: endpoint.responseTimeMs,
+          live: false,
+        });
+      } else {
+        setResult({
+          status: res.status,
+          body: data,
+          ms,
+          live: true,
+        });
+        setIsLive(true);
+      }
+    } catch {
+      // Network error (backend not running) — fall back to captured data
+      setResult({
+        status: endpoint.responseStatus,
+        body: endpoint.responseBody,
+        ms: endpoint.responseTimeMs,
+        live: false,
+      });
+    }
+
+    setState("done");
+  }
+
   return (
     <div className="endpoint-block">
-      {/* Method + Path */}
       <div className="endpoint-header">
         <span
           className="method-badge"
@@ -48,13 +97,24 @@ function EndpointRunner({ endpoint }) {
           {endpoint.method}
         </span>
         <code className="endpoint-path">{endpoint.path}</code>
+        {state === "done" && result?.live && (
+          <span
+            style={{
+              marginLeft: "auto",
+              fontSize: "0.65rem",
+              color: "#16a34a",
+              fontWeight: 600,
+            }}
+          >
+            ● LIVE
+          </span>
+        )}
       </div>
 
       {endpoint.description && (
         <p className="endpoint-desc">{endpoint.description}</p>
       )}
 
-      {/* Request body */}
       {hasRequestBody && (
         <div className="endpoint-section">
           <div className="endpoint-section-label">Request Body</div>
@@ -64,7 +124,6 @@ function EndpointRunner({ endpoint }) {
         </div>
       )}
 
-      {/* Run button */}
       <button
         className="btn-demo run-btn"
         onClick={handleRun}
@@ -75,7 +134,6 @@ function EndpointRunner({ endpoint }) {
         {state === "done" && "↺  Run Again"}
       </button>
 
-      {/* Loading dots */}
       {state === "running" && (
         <div className="endpoint-section">
           <div className="run-loading">
@@ -86,18 +144,26 @@ function EndpointRunner({ endpoint }) {
         </div>
       )}
 
-      {/* Response */}
-      {state === "done" && (
+      {state === "done" && result && (
         <div className="endpoint-section response-section">
           <div className="endpoint-section-label">
             Response
-            <StatusBadge status={endpoint.responseStatus} />
-            <span className="response-time">
-              {endpoint.responseTimeMs ?? "—"}ms
-            </span>
+            <StatusBadge status={result.status} />
+            <span className="response-time">{result.ms}ms</span>
+            {!result.live && (
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontSize: "0.62rem",
+                  color: "#a3a39c",
+                }}
+              >
+                captured example
+              </span>
+            )}
           </div>
           <pre className="json-block">
-            {JSON.stringify(endpoint.responseBody, null, 2)}
+            {JSON.stringify(result.body, null, 2)}
           </pre>
         </div>
       )}
@@ -105,7 +171,7 @@ function EndpointRunner({ endpoint }) {
   );
 }
 
-export default function ProjectDemoPanel({ demo }) {
+export default function ProjectDemoPanel({ demo, projectSlug }) {
   if (!demo) return null;
 
   return (
@@ -119,12 +185,13 @@ export default function ProjectDemoPanel({ demo }) {
         <EndpointRunner
           key={`${endpoint.method}-${endpoint.path}-${i}`}
           endpoint={endpoint}
+          projectSlug={projectSlug}
         />
       ))}
 
       <p className="demo-disclaimer">
-        Real captured request/response from this project's own test run — not a
-        live server.
+        Live responses use a shared demo database — data resets periodically.
+        Projects without a live sandbox show captured examples.
       </p>
     </div>
   );
