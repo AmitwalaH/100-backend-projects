@@ -41,12 +41,14 @@ function describeProblems(project, index) {
     problems.push(`"${label}" has a "github" URL that isn't http(s)`);
   }
 
-  if (
-    project.liveDemo !== undefined &&
-    project.liveDemo !== "#" &&
-    !/^https?:\/\//.test(project.liveDemo)
-  ) {
-    problems.push(`"${label}" has a "liveDemo" URL that isn't http(s)`);
+  if (project.liveDemo !== undefined && project.liveDemo !== false) {
+    if (project.liveDemo !== "#" && typeof project.liveDemo === "string") {
+      if (!/^https?:\/\//.test(project.liveDemo)) {
+        problems.push(`"${label}" has a "liveDemo" URL that isn't http(s)`);
+      }
+    } else if (project.liveDemo !== "#" && typeof project.liveDemo !== "string") {
+      problems.push(`"${label}" has a "liveDemo" value that must be false, "#", or an http(s) URL`);
+    }
   }
 
   return problems;
@@ -54,7 +56,7 @@ function describeProblems(project, index) {
 
 export function validateProjects(rawProjects) {
   if (!Array.isArray(rawProjects))
-    throw new Error("projects.json must be an array");
+    throw new Error("project-manifest.json must be an array");
 
   const seenIds = new Set();
   const valid = [];
@@ -79,7 +81,7 @@ export function validateProjects(rawProjects) {
   });
 
   if (allProblems.length > 0) {
-    const message = `Invalid entries in projects.json:\n${allProblems.map((p) => `  - ${p}`).join("\n")}`;
+    const message = `Invalid entries in project-manifest.json:\n${allProblems.map((p) => `  - ${p}`).join("\n")}`;
     if (import.meta.env?.DEV) throw new Error(message);
     console.warn(message);
   }

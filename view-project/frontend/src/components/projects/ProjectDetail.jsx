@@ -1,7 +1,8 @@
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { DIFFICULTY_CONFIG } from "../../constants";
 import { hasLiveDemo, formatProjectNumber } from "../../utils/projects";
-import { useProjectDemo } from "../../hooks/useProjectDemo";
-import ProjectDemoPanel from "./ProjectDemoPanel";
+import { useProjectPageConfig } from "../../hooks/useProjectPageConfig";
 
 const ExternalIcon = () => (
   <svg
@@ -62,18 +63,18 @@ export default function ProjectDetail({
   nextProject,
   onNavigate,
 }) {
+  const navigate = useNavigate();
   const diffConfig =
     DIFFICULTY_CONFIG[project.difficulty] ?? DIFFICULTY_CONFIG.Beginner;
-  const demo = useProjectDemo(project);
-  const showDemo = hasLiveDemo(project);
+  const projectPageConfig = useProjectPageConfig(project);
+  const hasProjectPage = Boolean(projectPageConfig);
+  const hasExternalDemo = hasLiveDemo(project);
   const num = formatProjectNumber(project.id);
-  const slug = project.title.toLowerCase().replace(/\s+/g, "-");
+  const slug = project.slug || project.title.toLowerCase().replace(/\s+/g, "-");
 
-  // Extract project folder slug for API calls: "blog-api", "url-shortener-api"
-  const projectSlug =
-    project.github
-      ?.match(/(project-[\w-]+)\/?$/)?.[1]
-      ?.replace(/^project-\d+-/, "") ?? slug;
+  function openProjectPage() {
+    navigate(`/project-page/${slug}`);
+  }
 
   return (
     <div className="detail">
@@ -108,7 +109,7 @@ export default function ProjectDetail({
       <hr className="detail-divider" />
 
       <div className="detail-actions">
-        {showDemo ? (
+        {hasExternalDemo ? (
           <a
             href={project.liveDemo}
             target="_blank"
@@ -118,10 +119,17 @@ export default function ProjectDetail({
             <ExternalIcon /> Live Demo
           </a>
         ) : (
-          <span className="btn-demo-disabled">
+          <button className="btn-demo-disabled" disabled>
             <ExternalIcon /> Live Demo
-          </span>
+          </button>
         )}
+        <button
+          className={hasProjectPage ? "btn-demo" : "btn-demo-disabled"}
+          onClick={openProjectPage}
+          disabled={!hasProjectPage}
+        >
+          <ExternalIcon /> Open Project Page
+        </button>
         <a
           href={project.github}
           target="_blank"
@@ -132,8 +140,17 @@ export default function ProjectDetail({
         </a>
       </div>
 
-      {/* API Playground — real backend if available, captured fallback otherwise */}
-      {demo && <ProjectDemoPanel demo={demo} projectSlug={projectSlug} />}
+      <div className="detail-demo-status">
+        {hasProjectPage ? (
+          <span className="status-local">Local project page available</span>
+        ) : hasExternalDemo ? (
+          <span className="status-external">External live demo available</span>
+        ) : (
+          <span className="status-unavailable">
+            Project page not configured yet
+          </span>
+        )}
+      </div>
 
       <hr className="detail-divider" />
 

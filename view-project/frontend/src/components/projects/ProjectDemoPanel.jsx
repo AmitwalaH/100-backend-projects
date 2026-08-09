@@ -54,12 +54,14 @@ function EndpointRunner({ endpoint, projectSlug }) {
       const data = await res.json();
       const ms = Date.now() - start;
 
-      if (data.fallback) {
-        // Backend has no sandbox for this project — show captured data
+      if (!res.ok || data.fallback) {
+        const message =
+          data?.error ||
+          "Live demo unavailable for this project. Ensure the backend service is running or the project supports live explorer integration.";
         setResult({
-          status: endpoint.responseStatus,
-          body: endpoint.responseBody,
-          ms: endpoint.responseTimeMs,
+          status: res.status,
+          body: { error: message },
+          ms,
           live: false,
         });
       } else {
@@ -71,12 +73,15 @@ function EndpointRunner({ endpoint, projectSlug }) {
         });
         setIsLive(true);
       }
-    } catch {
-      // Network error (backend not running) — fall back to captured data
+    } catch (err) {
       setResult({
-        status: endpoint.responseStatus,
-        body: endpoint.responseBody,
-        ms: endpoint.responseTimeMs,
+        status: 503,
+        body: {
+          error:
+            "Live demo request failed. Ensure the backend explorer or project backend is running.",
+          detail: err?.message,
+        },
+        ms: Date.now() - start,
         live: false,
       });
     }
@@ -190,8 +195,8 @@ export default function ProjectDemoPanel({ demo, projectSlug }) {
       ))}
 
       <p className="demo-disclaimer">
-        Live responses use a shared demo database — data resets periodically.
-        Projects without a live sandbox show captured examples.
+        Live responses require a running backend or sandbox-enabled project.
+        Captured demo examples are no longer used here.
       </p>
     </div>
   );

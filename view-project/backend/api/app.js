@@ -3,6 +3,8 @@ const corsMiddleware = require("./middleware/cors");
 const rateLimitMiddleware = require("./middleware/rateLimit");
 const sanitizeMiddleware = require("./middleware/sanitize");
 const demoRouter = require("./routes/demo");
+const projectConfigRouter = require("./routes/projectConfig");
+const projectRequestRouter = require("./routes/projectRequest");
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/demo", rateLimitMiddleware, demoRouter);
+app.use("/api/project-config", rateLimitMiddleware, projectConfigRouter);
+app.use("/api/project-request", rateLimitMiddleware, projectRequestRouter);
 
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;

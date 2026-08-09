@@ -1,9 +1,9 @@
 import { validateDemoFiles } from "../utils/validateDemoFiles";
 
 // Relative path — Vite resolves this relative to THIS file's location:
-// src/hooks/useProjectDemo.js → up 3 levels → repo root → project-*/demo.json
+// src/utils/useProjectDemo.js → up 4 levels → repo root → project-*/demo.json
 // DO NOT change to an absolute path (starting with /) — that breaks Vite's glob resolution.
-const rawDemoModules = import.meta.glob("../../../project-*/demo.json", {
+const rawDemoModules = import.meta.glob("../../../../project-*/demo.json", {
   eager: true,
   import: "default",
 });

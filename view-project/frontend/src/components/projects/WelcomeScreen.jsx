@@ -1,6 +1,6 @@
 import { SITE } from "../../constants";
 import { useGithubStats } from "../../hooks/useGithubStats";
-import projectsData from "../../data/projects.json";
+import projectsData from "../../../../../project-manifest.json";
 
 const totalCategories = new Set(projectsData.map((p) => p.category)).size;
 const totalTechs = new Set(projectsData.flatMap((p) => p.tech)).size;

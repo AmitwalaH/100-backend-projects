@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     fs: {
-      // Allows dev server to read demo.json files from sibling project-* folders
-      allow: [".."],
+      // Allows dev server to read project-page.json files from sibling project-* folders and root project manifest.
+      allow: ["..", "../.."],
     },
     proxy: {
       "/api": "http://localhost:4000",

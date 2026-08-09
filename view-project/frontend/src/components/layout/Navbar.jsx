@@ -20,7 +20,7 @@ const GithubIcon = () => (
   </svg>
 );
 
-export default function Navbar() {
+export default function Navbar({ theme, onToggleTheme }) {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
@@ -31,6 +31,14 @@ export default function Navbar() {
           <span className="navbar-logo-text">{SITE.name}</span>
         </a>
         <div className="navbar-links">
+          <button
+            type="button"
+            className="navbar-theme-toggle"
+            onClick={onToggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? "Light" : "Dark"}
+          </button>
           <a href={SITE.repoUrl} target="_blank" rel="noopener noreferrer">
             Docs
           </a>

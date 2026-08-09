@@ -9,8 +9,8 @@ It includes a React UI and a backend sandbox that can run example API requests f
 
 ## How it works
 ### Frontend
-The frontend reads `view-project/frontend/src/data/projects.json` for project metadata.
-It also loads `demo.json` files from sibling `project-*/` folders to show request examples.
+The frontend reads `project-manifest.json` at the repository root for project metadata.
+It also loads optional `demo.json` files from sibling `project-*/` folders to display example API requests and make the live playground work.
 
 ### Backend sandbox
 The backend exposes:
