@@ -1,7 +1,38 @@
 import { useState, useMemo } from "react";
 
+const METHOD_COLORS = {
+  GET: "#16a34a",
+  POST: "#ea580c",
+  PUT: "#2563eb",
+  PATCH: "#ca8a04",
+  DELETE: "#dc2626",
+};
+
+function statusColor(status) {
+  if (typeof status !== "number") return "#6b7280";
+  if (status >= 200 && status < 300) return "#16a34a";
+  if (status >= 300 && status < 400) return "#2563eb";
+  if (status >= 400 && status < 500) return "#d97706";
+  return "#dc2626";
+}
+
+function bytesOf(value) {
+  try {
+    return new Blob([typeof value === "string" ? value : JSON.stringify(value)]).size;
+  } catch {
+    return 0;
+  }
+}
+
 export default function ProjectApiRunner({ backendConfig }) {
-  const [resultByIndex, setResultByIndex] = useState({});
+  const hasCalls = useMemo(
+    () => Array.isArray(backendConfig?.calls) && backendConfig.calls.length > 0,
+    [backendConfig],
+  );
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [requestTab, setRequestTab] = useState("body");
+  const [responseTab, setResponseTab] = useState("body");
   const [editorValueByIndex, setEditorValueByIndex] = useState(() => {
     if (!backendConfig?.calls) return {};
     return backendConfig.calls.reduce((map, call, index) => {
@@ -9,36 +40,46 @@ export default function ProjectApiRunner({ backendConfig }) {
       return map;
     }, {});
   });
-
-  const hasCalls = useMemo(
-    () => Array.isArray(backendConfig?.calls) && backendConfig.calls.length > 0,
-    [backendConfig],
-  );
+  const [resultByIndex, setResultByIndex] = useState({});
 
   if (!backendConfig || !backendConfig.baseUrl || !hasCalls) {
     return null;
   }
 
-  function updateRequestBody(index, value) {
-    setEditorValueByIndex((state) => ({ ...state, [index]: value }));
+  const call = backendConfig.calls[activeIndex];
+  const method = call.method.toUpperCase();
+  const isBodyEditable = !["GET", "DELETE"].includes(method);
+  const result = resultByIndex[activeIndex];
+  const requestBodyText = editorValueByIndex[activeIndex] ?? "";
+  const fullUrl = `${backendConfig.baseUrl.replace(/\/$/, "")}${call.path}`;
+  const isRunning = result?.status === "running";
+
+  function selectCall(index) {
+    setActiveIndex(index);
+    setRequestTab("body");
+    setResponseTab("body");
   }
 
-  async function runCall(call, index) {
-    const bodyText = editorValueByIndex[index] ?? "";
+  function updateRequestBody(value) {
+    setEditorValueByIndex((state) => ({ ...state, [activeIndex]: value }));
+  }
+
+  async function runCall() {
+    const bodyText = editorValueByIndex[activeIndex] ?? "";
     let parsedBody = null;
 
-    if (call.method.toUpperCase() !== "GET" && call.method.toUpperCase() !== "DELETE") {
+    if (isBodyEditable) {
       if (bodyText.trim().length > 0) {
         try {
           parsedBody = JSON.parse(bodyText);
         } catch (err) {
           setResultByIndex((state) => ({
             ...state,
-            [index]: {
+            [activeIndex]: {
               status: "error",
               ok: false,
               error: `Invalid JSON: ${err.message}`,
-              url: `${backendConfig.baseUrl.replace(/\/$/, "")}${call.path}`,
+              url: fullUrl,
             },
           }));
           return;
@@ -48,17 +89,16 @@ export default function ProjectApiRunner({ backendConfig }) {
       }
     }
 
+    const startedAt = Date.now();
     setResultByIndex((state) => ({
       ...state,
-      [index]: { status: "running", body: null, error: null, startedAt: Date.now() },
+      [activeIndex]: { status: "running", body: null, error: null, startedAt },
     }));
 
     try {
       const response = await fetch("/api/project-request", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           baseUrl: backendConfig.baseUrl,
           method: call.method,
@@ -68,15 +108,15 @@ export default function ProjectApiRunner({ backendConfig }) {
       });
 
       const json = await response.json();
-      const elapsed = Date.now() - (resultByIndex[index]?.startedAt || Date.now());
+      const elapsed = Date.now() - startedAt;
 
       setResultByIndex((state) => ({
         ...state,
-        [index]: {
+        [activeIndex]: {
           status: json.status ?? response.status,
           ok: json.ok ?? response.ok,
           body: json.body ?? null,
-          url: json.url ?? `${backendConfig.baseUrl.replace(/\/$/, "")}${call.path}`,
+          url: json.url ?? fullUrl,
           statusText: json.statusText,
           error: json.error || null,
           timelineMs: elapsed,
@@ -86,90 +126,169 @@ export default function ProjectApiRunner({ backendConfig }) {
     } catch (err) {
       setResultByIndex((state) => ({
         ...state,
-        [index]: {
+        [activeIndex]: {
           status: "error",
           ok: false,
           error: err.message,
-          url: `${backendConfig.baseUrl.replace(/\/$/, "")}${call.path}`,
+          url: fullUrl,
+          timelineMs: Date.now() - startedAt,
         },
       }));
     }
   }
 
   return (
-    <div className="api-runner">
-      <div className="api-runner-header">
-        <div>
-          <span className="api-workspace-badge">API Workspace</span>
-          <h3>Backend API Runner</h3>
-          <p>Send requests directly to the local backend and inspect response details.</p>
-        </div>
-        <div className="api-runner-base-info">
-          <span className="api-runner-label">Base URL</span>
-          <code className="api-runner-base-url">{backendConfig.baseUrl}</code>
-        </div>
+    <div className="apibase-runner">
+      {/* Saved-request style tab strip along the top, one per endpoint */}
+      <div className="apibase-endpoint-tabs">
+        {backendConfig.calls.map((c, index) => (
+          <button
+            key={`${c.method}-${c.path}-${index}`}
+            className={`apibase-endpoint-tab ${index === activeIndex ? "active" : ""}`}
+            onClick={() => selectCall(index)}
+            type="button"
+          >
+            <span
+              className="apibase-endpoint-tab-method"
+              style={{ color: METHOD_COLORS[c.method.toUpperCase()] || "#6b7280" }}
+            >
+              {c.method.toUpperCase()}
+            </span>
+            <span className="apibase-endpoint-tab-path">{c.path}</span>
+          </button>
+        ))}
       </div>
 
-      {backendConfig.calls.map((call, index) => {
-        const result = resultByIndex[index];
-        const requestBodyText = editorValueByIndex[index] ?? "";
-        const isBodyEditable = !["GET", "DELETE"].includes(call.method.toUpperCase());
+      {/* URL bar: method badge + full url + Send button */}
+      <div className="apibase-url-bar">
+        <span
+          className="apibase-method-badge"
+          style={{ background: METHOD_COLORS[method] || "#6b7280" }}
+        >
+          {method}
+        </span>
+        <code className="apibase-url-input">{fullUrl}</code>
+        <button className="apibase-send-btn" onClick={runCall} disabled={isRunning} type="button">
+          {isRunning ? "Sending…" : "Send"}
+        </button>
+      </div>
 
-        return (
-          <div key={`${call.method}-${call.path}-${index}`} className="api-call-card">
-            <div className="api-call-row api-call-row-top">
-              <span className={`api-call-method api-call-method-${call.method.toLowerCase()}`}>
-                {call.method}
-              </span>
-              <div className="api-call-route">
-                <span className="api-call-route-prefix">{backendConfig.baseUrl}</span>
-                <code>{call.path}</code>
-              </div>
-              <button className="btn-run-api" onClick={() => runCall(call, index)}>
-                Run
-              </button>
+      {call.description && <p className="apibase-description">{call.description}</p>}
+
+      {/* Request panel: Body / Headers tabs */}
+      <div className="apibase-request-panel">
+        <div className="apibase-tab-strip">
+          <button
+            className={`apibase-tab ${requestTab === "body" ? "active" : ""}`}
+            onClick={() => setRequestTab("body")}
+            type="button"
+          >
+            Body
+          </button>
+          <button
+            className={`apibase-tab ${requestTab === "headers" ? "active" : ""}`}
+            onClick={() => setRequestTab("headers")}
+            type="button"
+          >
+            Headers
+          </button>
+        </div>
+
+        {requestTab === "body" &&
+          (isBodyEditable ? (
+            <textarea
+              className="apibase-editor"
+              value={requestBodyText}
+              onChange={(e) => updateRequestBody(e.target.value)}
+              spellCheck={false}
+              aria-label={`Request body for ${method} ${call.path}`}
+            />
+          ) : (
+            <div className="apibase-empty-note">{method} requests don't send a body.</div>
+          ))}
+
+        {requestTab === "headers" && (
+          <div className="apibase-headers-table">
+            <div className="apibase-headers-row">
+              <span className="apibase-headers-key">Content-Type</span>
+              <span className="apibase-headers-value">application/json</span>
             </div>
+          </div>
+        )}
+      </div>
 
-            <p className="api-call-description">{call.description}</p>
-
-            {isBodyEditable && (
-              <div className="api-call-section api-call-editor">
-                <div className="api-call-section-label">Request Body</div>
-                <textarea
-                  className="api-call-textarea"
-                  value={requestBodyText}
-                  onChange={(e) => updateRequestBody(index, e.target.value)}
-                  spellCheck={false}
-                  aria-label={`Request body for ${call.method} ${call.path}`}
-                />
-                <div className="api-editor-hint">You can modify the payload before sending.</div>
-              </div>
+      {/* Response panel */}
+      {result && (
+        <div className="apibase-response-panel">
+          <div className="apibase-response-summary">
+            <span className="apibase-response-label">Response</span>
+            {typeof result.status === "number" ? (
+              <span className="apibase-status-chip" style={{ color: statusColor(result.status) }}>
+                {result.status} {result.statusText || ""}
+              </span>
+            ) : result.status === "running" ? (
+              <span className="apibase-status-chip apibase-status-running">Sending…</span>
+            ) : (
+              <span className="apibase-status-chip apibase-status-error">Error</span>
             )}
-
-            {result && (
-              <div className="api-call-result">
-                <div className="api-call-result-header">
-                  <div>
-                    <span
-                      className={`status-pill status-pill-${result.ok ? "success" : result.status === "running" ? "running" : "error"}`}
-                    >
-                      {result.ok ? "Success" : result.status === "running" ? "Running" : "Error"}
-                    </span>
-                    <span className="api-result-status-code">{result.status}</span>
-                    <span className="api-result-time">{result.timelineMs ? `${result.timelineMs} ms` : ""}</span>
-                  </div>
-                  <div className="api-result-url">{result.url}</div>
-                </div>
-                {result.error ? (
-                  <pre className="json-block">{result.error}</pre>
-                ) : (
-                  <pre className="json-block">{JSON.stringify(result.body, null, 2)}</pre>
-                )}
-              </div>
+            {typeof result.timelineMs === "number" && (
+              <span className="apibase-response-meta">{result.timelineMs} ms</span>
+            )}
+            {result.body != null && (
+              <span className="apibase-response-meta">{bytesOf(result.body)} B</span>
             )}
           </div>
-        );
-      })}
+
+          {result.status === "running" ? (
+            <div className="run-loading">
+              <div className="run-dot" />
+              <div className="run-dot" />
+              <div className="run-dot" />
+            </div>
+          ) : (
+            <>
+              <div className="apibase-tab-strip">
+                <button
+                  className={`apibase-tab ${responseTab === "body" ? "active" : ""}`}
+                  onClick={() => setResponseTab("body")}
+                  type="button"
+                >
+                  Body
+                </button>
+                <button
+                  className={`apibase-tab ${responseTab === "headers" ? "active" : ""}`}
+                  onClick={() => setResponseTab("headers")}
+                  disabled={!result.headers}
+                  type="button"
+                >
+                  Headers
+                </button>
+              </div>
+
+              {responseTab === "body" && (
+                <pre className="apibase-response-body">
+                  {result.error ? result.error : JSON.stringify(result.body, null, 2)}
+                </pre>
+              )}
+
+              {responseTab === "headers" && (
+                <div className="apibase-headers-table">
+                  {result.headers ? (
+                    Object.entries(result.headers).map(([key, value]) => (
+                      <div className="apibase-headers-row" key={key}>
+                        <span className="apibase-headers-key">{key}</span>
+                        <span className="apibase-headers-value">{value}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="apibase-empty-note">No response headers captured.</div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

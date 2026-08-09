@@ -111,7 +111,9 @@ export default function App() {
     if (typeof window === "undefined") return "light";
     return (
       window.localStorage.getItem("apiExplorerTheme") ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light")
     );
   });
 
@@ -128,28 +130,32 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Both routes render the same Shell — slug presence determines what's shown */}
-        <Route path="/" element={<Shell theme={theme} onToggleTheme={toggleTheme} />} />
-        <Route path="/project/:slug" element={<Shell theme={theme} onToggleTheme={toggleTheme} />} />
-        <Route path="/project-page/:slug" element={<ProjectPageShell theme={theme} onToggleTheme={toggleTheme} />} />
+        <Route
+          path="/"
+          element={<Shell theme={theme} onToggleTheme={toggleTheme} />}
+        />
+        <Route
+          path="/project/:slug"
+          element={<Shell theme={theme} onToggleTheme={toggleTheme} />}
+        />
+        <Route
+          path="/project-page/:slug"
+          element={
+            <ProjectPageShell theme={theme} onToggleTheme={toggleTheme} />
+          }
+        />
         {/* Catch-all: redirect unknown paths to home */}
-        <Route path="*" element={<Shell theme={theme} onToggleTheme={toggleTheme} />} />
+        <Route
+          path="*"
+          element={<Shell theme={theme} onToggleTheme={toggleTheme} />}
+        />
       </Routes>
     </BrowserRouter>
   );
 }
 
 function ProjectPageShell({ theme, onToggleTheme }) {
-  const navigate = useNavigate();
   const { slug } = useParams();
-
-  const {
-    search,
-    setSearch,
-    activeCategory,
-    setActiveCategory,
-    categories,
-    filtered,
-  } = useProjectFilter(projectsData);
 
   const selected = useMemo(
     () => projectsData.find((p) => toSlug(p) === slug) ?? null,
@@ -160,20 +166,6 @@ function ProjectPageShell({ theme, onToggleTheme }) {
     <>
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <div className="shell">
-        <Sidebar
-          projects={projectsData}
-          filtered={filtered}
-          selectedId={selected?.id ?? null}
-          onSelect={(project) => navigate(`/project/${toSlug(project)}`)}
-          search={search}
-          onSearchChange={setSearch}
-          categories={categories}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-          theme={theme}
-          onToggleTheme={onToggleTheme}
-        />
-
         <main className="main">
           <GridErrorBoundary>
             {selected ? <ProjectPage project={selected} /> : <WelcomeScreen />}

@@ -1677,3 +1677,415 @@ html[data-theme="dark"] .btn-run-api {
   text-align: center;
   font-style: italic;
 }
+
+/* ── apibase-style API Runner ───────────────────────────── */
+.apibase-runner {
+  display: grid;
+  gap: 0;
+}
+
+.apibase-endpoint-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.apibase-endpoint-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+  cursor: pointer;
+  font-family: "Figtree", inherit;
+  font-size: 0.8rem;
+  color: #4b5563;
+  transition: all 0.15s;
+}
+
+.apibase-endpoint-tab:hover {
+  border-color: #cbd5e1;
+  background: #fff;
+}
+
+.apibase-endpoint-tab.active {
+  background: #fff;
+  border-color: #111827;
+  color: #111827;
+  box-shadow: 0 1px 0 #111827 inset;
+}
+
+.apibase-endpoint-tab-method {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.apibase-endpoint-tab-path {
+  font-family: "JetBrains Mono", monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+.apibase-url-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.apibase-method-badge {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.apibase-url-input {
+  flex: 1;
+  padding: 12px 14px;
+  background: #fff;
+  color: #111827;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.apibase-send-btn {
+  padding: 0 22px;
+  border: none;
+  background: #ea580c;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: "Figtree", inherit;
+  flex-shrink: 0;
+}
+
+.apibase-send-btn:hover:not(:disabled) {
+  background: #c2410c;
+}
+
+.apibase-send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.apibase-description {
+  margin: 0 0 16px;
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.apibase-request-panel,
+.apibase-response-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.apibase-tab-strip {
+  display: flex;
+  gap: 2px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 6px 6px 0;
+}
+
+.apibase-tab {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: "Figtree", inherit;
+  transition: color 0.15s;
+}
+
+.apibase-tab:hover:not(:disabled) {
+  color: #111827;
+}
+
+.apibase-tab.active {
+  color: #ea580c;
+  border-bottom-color: #ea580c;
+}
+
+.apibase-tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.apibase-editor {
+  width: 100%;
+  min-height: 180px;
+  border: none;
+  background: #fff;
+  color: #111827;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85rem;
+  padding: 16px;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+
+.apibase-empty-note {
+  padding: 20px 16px;
+  color: #9ca3af;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.apibase-headers-table {
+  padding: 4px 16px;
+}
+
+.apibase-headers-row {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+}
+
+.apibase-headers-row:last-child {
+  border-bottom: none;
+}
+
+.apibase-headers-key {
+  color: #6b7280;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.apibase-headers-value {
+  color: #111827;
+  overflow-wrap: anywhere;
+}
+
+.apibase-response-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.apibase-response-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.apibase-status-chip {
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.apibase-status-running {
+  color: #d97706;
+}
+
+.apibase-status-error {
+  color: #dc2626;
+}
+
+.apibase-response-meta {
+  color: #6b7280;
+  font-size: 0.78rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.apibase-response-body {
+  margin: 0;
+  padding: 16px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Dark theme */
+html[data-theme="dark"] .apibase-endpoint-tab {
+  background: #0f172a;
+  border-color: #1e293b;
+  color: #94a3b8;
+}
+html[data-theme="dark"] .apibase-endpoint-tab.active {
+  background: #151f36;
+  border-color: #e2e8f0;
+  color: #e2e8f0;
+  box-shadow: 0 1px 0 #e2e8f0 inset;
+}
+html[data-theme="dark"] .apibase-url-bar {
+  border-color: #334155;
+}
+html[data-theme="dark"] .apibase-url-input {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .apibase-description {
+  color: #94a3b8;
+}
+html[data-theme="dark"] .apibase-request-panel,
+html[data-theme="dark"] .apibase-response-panel {
+  border-color: #1e293b;
+}
+html[data-theme="dark"] .apibase-tab-strip,
+html[data-theme="dark"] .apibase-response-summary {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+html[data-theme="dark"] .apibase-editor {
+  background: #0b1120;
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .apibase-headers-row {
+  border-color: #1e293b;
+}
+html[data-theme="dark"] .apibase-headers-value {
+  color: #e2e8f0;
+}
+
+/* ── Project page demo status line ──────────────────────── */
+.detail-demo-status {
+  margin-top: 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-local {
+  color: #16a34a;
+}
+
+.status-external {
+  color: #2563eb;
+}
+
+.status-unavailable {
+  color: #9ca3af;
+}
+
+html[data-theme="dark"] .status-unavailable {
+  color: #64748b;
+}
+
+
+/* ── Project page: console mode (Open Project Page view) ───────────
+   Replaces the old hero + visual-card layout with a compact topbar
+   so the request console owns the page.
+------------------------------------------------------------------- */
+
+.project-page-console-mode {
+  max-width: 1600px;
+  padding: 22px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.project-page-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.project-page-topbar-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.project-page-topbar-main h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+.project-page-frontend-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+  border: 1px solid #c7d2fe;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.project-page-frontend-link:hover {
+  background: #eef2ff;
+}
+
+.project-page-console-mode .request-console {
+  min-height: calc(100vh - 210px);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px -24px rgba(15, 23, 42, 0.14);
+}
+
+html[data-theme="dark"] .project-page-topbar-main h1 {
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .project-page-frontend-link {
+  border-color: #334155;
+  color: #93c5fd;
+}
+
+html[data-theme="dark"] .project-page-frontend-link:hover {
+  background: #151f36;
+}
+
+@media (max-width: 768px) {
+  .project-page-console-mode {
+    padding: 16px 16px 28px;
+  }
+  .project-page-console-mode .request-console {
+    min-height: calc(100vh - 260px);
+    flex-direction: column;
+  }
+}

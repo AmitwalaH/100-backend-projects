@@ -29,10 +29,12 @@ function StatusBadge({ status }) {
 function EndpointRunner({ endpoint, projectSlug }) {
   const [state, setState] = useState("idle"); // idle | running | done | error
   const [result, setResult] = useState(null);
-  const [isLive, setIsLive] = useState(false);
 
   const hasRequestBody =
     endpoint.requestBody !== null && endpoint.requestBody !== undefined;
+  const methodAllowsBody = !["GET", "DELETE"].includes(
+    (endpoint.method || "").toUpperCase(),
+  );
 
   async function handleRun() {
     setState("running");
@@ -47,7 +49,7 @@ function EndpointRunner({ endpoint, projectSlug }) {
         body: JSON.stringify({
           method: endpoint.method,
           path: endpoint.path,
-          body: endpoint.requestBody ?? {},
+          ...(methodAllowsBody ? { body: endpoint.requestBody ?? {} } : {}),
         }),
       });
 
@@ -71,7 +73,6 @@ function EndpointRunner({ endpoint, projectSlug }) {
           ms,
           live: true,
         });
-        setIsLive(true);
       }
     } catch (err) {
       setResult({
@@ -177,7 +178,9 @@ function EndpointRunner({ endpoint, projectSlug }) {
 }
 
 export default function ProjectDemoPanel({ demo, projectSlug }) {
-  if (!demo) return null;
+  if (!demo || !Array.isArray(demo.endpoints) || demo.endpoints.length === 0) {
+    return null;
+  }
 
   return (
     <div className="demo-panel">
