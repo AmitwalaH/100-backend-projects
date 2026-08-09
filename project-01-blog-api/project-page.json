@@ -1,0 +1,61 @@
+{
+  "title": "Blog API",
+  "description": "A local-first Blog API project page with backend runner and frontend preview.",
+  "backendConfig": {
+    "baseUrl": "http://localhost:3000",
+    "calls": [
+      {
+        "method": "POST",
+        "path": "/auth/register",
+        "description": "Register a new user account.",
+        "requestBody": {
+          "name": "Amit Wala",
+          "email": "amit+demo@example.com",
+          "password": "Password123!"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/posts",
+        "description": "Create a new blog post.",
+        "requestBody": {
+          "title": "How to Build a Backend Explorer",
+          "content": "This is a demo blog post created from the local explorer.",
+          "tags": ["backend", "demo", "nodejs"]
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/posts",
+        "description": "Fetch all blog posts.",
+        "requestBody": null
+      }
+    ]
+  },
+  "frontendConfig": {
+    "url": "http://localhost:3000",
+    "description": "Open the local Blog UI or frontend preview for the Blog API project.",
+    "preview": [
+      {
+        "label": "UI",
+        "value": "Login + register pages with session-backed auth."
+      },
+      {
+        "label": "Feed",
+        "value": "Blog post list, create, and comment workflows."
+      }
+    ]
+  },
+  "visuals": [
+    {
+      "type": "stat",
+      "label": "Posts",
+      "value": "CRUD, list, and delete"
+    },
+    {
+      "type": "stat",
+      "label": "Auth",
+      "value": "session-based login + protected routes"
+    }
+  ]
+}

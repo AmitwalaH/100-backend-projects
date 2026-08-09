@@ -1,0 +1,52 @@
+{
+  "title": "Products API",
+  "description": "A local products API page with backend endpoint runner and frontend inventory preview.",
+  "backendConfig": {
+    "baseUrl": "http://localhost:3001",
+    "calls": [
+      {
+        "method": "POST",
+        "path": "/products",
+        "description": "Create a new product.",
+        "requestBody": {
+          "name": "Smart Lamp",
+          "description": "A smart lamp with adjustable brightness and voice control.",
+          "price": 49.99,
+          "category": "Home"
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/products",
+        "description": "List all products.",
+        "requestBody": null
+      }
+    ]
+  },
+  "frontendConfig": {
+    "url": "http://localhost:3001",
+    "description": "Open the local Products API preview or inventory management view.",
+    "preview": [
+      {
+        "label": "UI",
+        "value": "Product listing and details view with admin create flow."
+      },
+      {
+        "label": "Endpoints",
+        "value": "Create product, list all products, and read details."
+      }
+    ]
+  },
+  "visuals": [
+    {
+      "type": "stat",
+      "label": "Create",
+      "value": "POST /products"
+    },
+    {
+      "type": "stat",
+      "label": "Explore",
+      "value": "GET /products"
+    }
+  ]
+}

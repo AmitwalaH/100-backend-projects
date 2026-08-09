@@ -234,7 +234,7 @@
     "id": 22,
     "slug": "project-22-api-docs",
     "title": "API Docs",
-    "description": "Auto-generated API documentation system with Swagger/OpenAPI spec, interactive UI and Postman collection export.",
+    "description": "Auto-generated API documentation system with Swagger/OpenAPI spec, interactive UI and collection export.",
     "tech": ["Node.js", "Express", "Swagger", "OpenAPI"],
     "category": "Tools",
     "difficulty": "Intermediate",

@@ -32,6 +32,10 @@ The repository has two main parts:
    - `view-project/frontend`: React + Vite explorer UI.
    - `view-project/backend`: demo API sandbox and live endpoint runner.
    - This wrapper is intended to help learners preview API behavior without manually coding every request.
+3. `api-workspace/`
+   - A dedicated local API builder for backend projects.
+   - Includes a React request editor and a proxy server that forwards calls to local backend servers.
+   - This workspace is designed for direct request execution and response inspection.
 
 ## How to run
 ### Run a single backend project
@@ -63,13 +67,37 @@ npm run dev
 
 If you deploy the demo backend, set `VITE_API_URL` in the frontend environment to your deployed API URL.
 
+### Run the API workspace
+A second local workspace is available in `api-workspace/` for request testing.
+
+1. Start the backend project you want to test (example for Blog API):
+```bash
+cd project-01-blog-api
+npm install
+npm start
+```
+
+2. Start the workspace proxy:
+```bash
+cd api-workspace
+npm install
+npm run start
+```
+
+3. Start the workspace frontend:
+```bash
+cd api-workspace
+npm run dev
+```
+
+4. Open the browser at `http://localhost:5174`
+
 ## What is implemented today
 ### Projects and demo support
 - 51 backend project folders.
 - A frontend UI that loads `view-project/frontend/src/data/projects.json`.
 - Live demo sandbox support for a small subset of projects.
-- `project-01-blog-api/demo.json` and `project-07-url-shortener-api/demo.json` as examples of live/demo payloads.
-
+- `project-01-blog-api/demo.json` and `project-07-url-shortener-api/demo.json` as examples of live/demo payloads.- A new local request builder in `api-workspace/` for direct API testing.
 ### Key platform building blocks
 - `view-project/backend/api/index.js` — main demo API server
 - `view-project/backend/api/routes/demo.js` — API playground route

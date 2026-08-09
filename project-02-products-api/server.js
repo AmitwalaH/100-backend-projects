@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const productsRouter = require("./routes/products");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.use(express.static("public"));
 // Connect to MongoDB
 mongoose
