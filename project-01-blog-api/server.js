@@ -1,20 +1,33 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const path = require("path");
+
 const postsRouter = require("./routes/posts");
 const authRouter = require("./routes/auth");
-const session = require("express-session");
-const app = express();
 
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static("public"));
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Sessions
+app.use(
+  session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+
+// Serve HTML/CSS/JS from public/ (absolute path so it works regardless of cwd)
+app.use(express.static(path.join(__dirname, "public")));
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb://localhost:27017/blog", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect("mongodb://localhost:27017/blog")
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -22,29 +35,11 @@ mongoose
     console.error("MongoDB connection error:", err);
   });
 
-// Middleware to parse JSON bodies
-app.use(express.json());
-
-// Add this after express.json()
-app.use(express.urlencoded({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.send("Welcome to the Blog API");
-});
-// Session middleware
-
-// Add this before your routes
-app.use(
-  session({
-    secret: "your-secret-key",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
+// Routes
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

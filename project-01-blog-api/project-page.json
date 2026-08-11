@@ -35,6 +35,11 @@
   "frontendConfig": {
     "url": "http://localhost:3000",
     "description": "Open the local Blog UI or frontend preview for the Blog API project.",
+    "pages": [
+      { "label": "Login", "path": "/index.html" },
+      { "label": "Register", "path": "/register.html" },
+      { "label": "Dashboard", "path": "/dashboard.html" }
+    ],
     "preview": [
       {
         "label": "UI",
@@ -47,11 +52,7 @@
     ]
   },
   "visuals": [
-    {
-      "type": "stat",
-      "label": "Posts",
-      "value": "CRUD, list, and delete"
-    },
+    { "type": "stat", "label": "Posts", "value": "CRUD, list, and delete" },
     {
       "type": "stat",
       "label": "Auth",
