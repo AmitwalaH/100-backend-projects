@@ -1,20 +1,22 @@
-/* ── Request Console ─────────────────────────────────────────────────
+/* -- Request Console -------------------------------------------------
    Scoped under .request-console. Reuses the app's existing tokens
-   (Figtree / JetBrains Mono, #111827 / #2563eb / #ea580c palette)
+   (Figtree / JetBrains Mono, #111827 / #2563eb / var(--rc-accent) palette)
    rather than introducing a second design language.
 ------------------------------------------------------------------- */
 
 .request-console {
+  --rc-accent: #ea580c;
+  --rc-accent-hover: #c2410c;
   display: flex;
   border: 1px solid #e5e7eb;
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
   background: #fff;
   min-height: 640px;
   font-size: 1.02rem;
 }
 
-/* ── Collection sidebar (Saved / History) ───────────────────────── */
+/* -- Collection sidebar (Saved / History) ------------------------- */
 .rc-collection-sidebar {
   width: 250px;
   flex-shrink: 0;
@@ -44,7 +46,7 @@
 
 .rc-collection-tabs button.active {
   color: #111827;
-  border-bottom-color: #ea580c;
+  border-bottom-color: var(--rc-accent);
 }
 
 .rc-collection-list {
@@ -67,7 +69,7 @@
 .rc-history-clear {
   border: none;
   background: none;
-  color: #ea580c;
+  color: var(--rc-accent);
   font-size: 0.68rem;
   cursor: pointer;
   font-family: inherit;
@@ -131,7 +133,7 @@
   color: #dc2626;
 }
 
-/* ── Main column ─────────────────────────────────────────────────── */
+/* -- Main column --------------------------------------------------- */
 .rc-main-column {
   flex: 1;
   display: flex;
@@ -147,7 +149,7 @@
   background: #fafafa;
 }
 
-/* ── Tab bar ─────────────────────────────────────────────────────── */
+/* -- Tab bar ------------------------------------------------------- */
 .rc-tab-bar {
   display: flex;
   align-items: center;
@@ -177,7 +179,7 @@
 .rc-tab.active {
   background: #fff;
   color: #111827;
-  box-shadow: inset 0 -2px 0 #ea580c;
+  box-shadow: inset 0 -2px 0 var(--rc-accent);
 }
 
 .rc-tab-method {
@@ -196,7 +198,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #ea580c;
+  background: var(--rc-accent);
   flex-shrink: 0;
 }
 
@@ -229,7 +231,7 @@
   color: #111827;
 }
 
-/* ── Environment bar ─────────────────────────────────────────────── */
+/* -- Environment bar ----------------------------------------------- */
 .rc-environment-bar {
   position: relative;
   display: flex;
@@ -306,7 +308,7 @@
   margin: 0;
 }
 
-/* ── URL bar ─────────────────────────────────────────────────────── */
+/* -- URL bar ------------------------------------------------------- */
 .rc-url-bar-wrap {
   padding: 16px 18px;
   border-bottom: 1px solid #e5e7eb;
@@ -315,14 +317,16 @@
 .rc-url-bar {
   display: flex;
   border: 1.5px solid #d1d5db;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .rc-url-bar:focus-within {
-  border-color: #ea580c;
-  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+  border-color: var(--rc-accent);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
 }
 
 .rc-method-select {
@@ -349,7 +353,7 @@
 
 .rc-send-btn {
   border: none;
-  background: #ea580c;
+  background: var(--rc-accent);
   color: #fff;
   font-weight: 700;
   font-size: 0.92rem;
@@ -359,7 +363,7 @@
 }
 
 .rc-send-btn:hover:not(:disabled) {
-  background: #c2410c;
+  background: var(--rc-accent-hover);
 }
 
 .rc-send-btn:disabled {
@@ -431,7 +435,7 @@
   cursor: pointer;
 }
 
-/* ── Split pane ──────────────────────────────────────────────────── */
+/* -- Split pane ---------------------------------------------------- */
 .split-pane {
   display: flex;
   flex-direction: column;
@@ -465,7 +469,7 @@
   background: #d1d5db;
 }
 
-/* ── Request / response shared panel chrome ─────────────────────── */
+/* -- Request / response shared panel chrome ----------------------- */
 .rc-request-panel,
 .rc-response-panel {
   display: flex;
@@ -497,8 +501,8 @@
 }
 
 .rc-panel-tab.active {
-  color: #ea580c;
-  border-bottom-color: #ea580c;
+  color: var(--rc-accent);
+  border-bottom-color: var(--rc-accent);
 }
 
 .rc-panel-tab-count {
@@ -526,7 +530,7 @@
   padding: 10px 2px;
 }
 
-/* ── Key/value table (shared: params, headers, form body, env vars) ─ */
+/* -- Key/value table (shared: params, headers, form body, env vars) - */
 .kv-table {
   width: 100%;
   border-collapse: collapse;
@@ -577,7 +581,7 @@
 }
 
 .kv-input:focus {
-  border-color: #ea580c;
+  border-color: var(--rc-accent);
   background: #fff;
 }
 
@@ -594,7 +598,7 @@
   color: #dc2626;
 }
 
-/* ── Auth editor ─────────────────────────────────────────────────── */
+/* -- Auth editor --------------------------------------------------- */
 .rc-field {
   margin-top: 12px;
 }
@@ -627,7 +631,7 @@
 }
 
 .rc-text-input:focus {
-  border-color: #ea580c;
+  border-color: var(--rc-accent);
 }
 
 .rc-timeout-input {
@@ -643,7 +647,7 @@
   color: #374151;
 }
 
-/* ── Body editor ─────────────────────────────────────────────────── */
+/* -- Body editor --------------------------------------------------- */
 .rc-body-mode-row {
   display: flex;
   gap: 16px;
@@ -672,10 +676,10 @@
 }
 
 .rc-body-textarea:focus {
-  border-color: #ea580c;
+  border-color: var(--rc-accent);
 }
 
-/* ── Scripts editor ──────────────────────────────────────────────── */
+/* -- Scripts editor ------------------------------------------------ */
 .rc-scripts-editor {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -701,10 +705,10 @@
 }
 
 .rc-scripts-textarea:focus {
-  border-color: #ea580c;
+  border-color: var(--rc-accent);
 }
 
-/* ── Response panel ──────────────────────────────────────────────── */
+/* -- Response panel ------------------------------------------------ */
 .rc-response-summary {
   display: flex;
   align-items: center;
@@ -794,7 +798,7 @@
   border-radius: 8px;
 }
 
-/* ── Tests tab ───────────────────────────────────────────────────── */
+/* -- Tests tab ----------------------------------------------------- */
 .rc-tests-summary {
   font-size: 0.78rem;
   font-weight: 600;
@@ -834,7 +838,7 @@
   font-weight: 700;
 }
 
-/* ── Console log ─────────────────────────────────────────────────── */
+/* -- Console log --------------------------------------------------- */
 .rc-console-log {
   border-top: 1px solid #e5e7eb;
   flex-shrink: 0;
@@ -879,7 +883,7 @@
 .rc-console-clear {
   border: none;
   background: none;
-  color: #ea580c;
+  color: var(--rc-accent);
   cursor: pointer;
   font-size: 0.68rem;
   font-family: inherit;
@@ -925,7 +929,7 @@
   overflow-x: auto;
 }
 
-/* ── Dark theme ──────────────────────────────────────────────────── */
+/* -- Dark theme ---------------------------------------------------- */
 html[data-theme="dark"] .request-console {
   background: #0f172a;
   border-color: #1e293b;
@@ -974,4 +978,115 @@ html[data-theme="dark"] .rc-url-input {
 }
 html[data-theme="dark"] .kv-input:focus {
   background: #111827;
+}
+html[data-theme="dark"] .rc-collection-item:hover {
+  background: #151f36;
+}
+html[data-theme="dark"] .rc-tab-new:hover {
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .rc-command-toggle:hover {
+  color: #e2e8f0;
+}
+
+/* -- Top row controls wrapper (accent picker + environment bar together) -- */
+.rc-top-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 6px;
+}
+
+/* -- Accent color picker -- */
+.rc-accent-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-right: 1px solid #e5e7eb;
+  margin-right: 4px;
+}
+
+.rc-accent-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: content-box;
+}
+
+.rc-accent-swatch.active {
+  border-color: #111827;
+}
+
+html[data-theme="dark"] .rc-accent-picker {
+  border-color: #1e293b;
+}
+
+html[data-theme="dark"] .rc-accent-swatch.active {
+  border-color: #e2e8f0;
+}
+
+/* -- Saved requests grouped into folders -- */
+.rc-folder-group {
+  margin-bottom: 4px;
+}
+
+.rc-folder-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 7px 8px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: inherit;
+}
+
+.rc-folder-caret {
+  display: inline-block;
+  font-size: 0.6rem;
+  transition: transform 0.12s;
+  transform: rotate(90deg);
+}
+
+.rc-folder-caret.collapsed {
+  transform: rotate(0deg);
+}
+
+.rc-folder-name {
+  flex: 1;
+  text-align: left;
+}
+
+.rc-folder-count {
+  background: #e5e7eb;
+  color: #374151;
+  border-radius: 9999px;
+  font-size: 0.62rem;
+  padding: 1px 6px;
+  font-weight: 600;
+}
+
+html[data-theme="dark"] .rc-folder-count {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+/* -- Response body content-type tag -- */
+.rc-response-kind-tag {
+  margin-left: auto;
+  font-size: 0.66rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  align-self: center;
 }

@@ -1,5 +1,5 @@
 import "./styles.css";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { useRequestTabs } from "./hooks/useRequestTabs";
 import { useEnvironments } from "./hooks/useEnvironments";
@@ -7,10 +7,12 @@ import { useSavedRequests } from "./hooks/useSavedRequests";
 import { useRequestHistory } from "./hooks/useRequestHistory";
 import { useConsoleLog } from "./hooks/useConsoleLog";
 import { useSendRequest } from "./hooks/useSendRequest";
+import { useAccentColor } from "./hooks/useAccentColor";
 
 import CollectionSidebar from "./components/CollectionSidebar";
 import TabBar from "./components/TabBar";
 import EnvironmentBar from "./components/EnvironmentBar";
+import AccentPicker from "./components/AccentPicker";
 import UrlBar from "./components/UrlBar";
 import RequestPanel from "./components/RequestPanel";
 import ResponsePanel from "./components/ResponsePanel";
@@ -18,21 +20,38 @@ import SplitPane from "./components/SplitPane";
 import ConsoleLog from "./components/ConsoleLog";
 
 /**
- * Top-level request console for one project. `projectKey` scopes tabs,
- * saved requests, and history to this project; environments are shared
- * globally across every project (see useEnvironments).
+ * Top-level request console for one project. projectKey scopes tabs,
+ * saved requests, and history to this project; environments and the
+ * accent color are shared globally across every project.
  */
 export default function RequestConsole({ backendConfig, projectKey }) {
-  const { tabs, activeTab, activeTabId, setActiveTabId, updateTab, patchTabSilently, openBlankTab, openTabFromSaved, closeTab, duplicateTab } =
-    useRequestTabs(projectKey, backendConfig);
+  const {
+    tabs,
+    activeTab,
+    activeTabId,
+    setActiveTabId,
+    updateTab,
+    patchTabSilently,
+    openBlankTab,
+    openTabFromSaved,
+    closeTab,
+    duplicateTab,
+  } = useRequestTabs(projectKey, backendConfig);
 
   const environments = useEnvironments();
-  const { savedRequests, saveRequest, deleteSavedRequest } = useSavedRequests(projectKey);
+  const { savedRequests, saveRequest, deleteSavedRequest } =
+    useSavedRequests(projectKey);
   const { history, addEntry, clearHistory } = useRequestHistory(projectKey);
   const { entries: logEntries, log, clear: clearLog } = useConsoleLog();
   const sendRequest = useSendRequest({ environments, projectKey });
+  const { accent, setAccent, options: accentOptions } = useAccentColor();
 
   const [isSending, setIsSending] = useState(false);
+
+  const rootStyle = useMemo(
+    () => ({ "--rc-accent": accent.base, "--rc-accent-hover": accent.hover }),
+    [accent],
+  );
 
   const handleChange = useCallback(
     (patch) => {
@@ -87,7 +106,9 @@ export default function RequestConsole({ backendConfig, projectKey }) {
 
   const handleOpenSaved = useCallback(
     (savedRequestRecord) => {
-      const existingTab = tabs.find((t) => t.savedRequestId === savedRequestRecord.id);
+      const existingTab = tabs.find(
+        (t) => t.savedRequestId === savedRequestRecord.id,
+      );
       if (existingTab) {
         setActiveTabId(existingTab.id);
         return;
@@ -100,7 +121,11 @@ export default function RequestConsole({ backendConfig, projectKey }) {
   const handleOpenHistoryEntry = useCallback(
     (entry) => {
       const id = openBlankTab();
-      updateTab(id, { name: `${entry.method} ${entry.url}`, method: entry.method, url: entry.url });
+      updateTab(id, {
+        name: entry.method + " " + entry.url,
+        method: entry.method,
+        url: entry.url,
+      });
     },
     [openBlankTab, updateTab],
   );
@@ -108,7 +133,7 @@ export default function RequestConsole({ backendConfig, projectKey }) {
   if (!activeTab) return null;
 
   return (
-    <div className="request-console">
+    <div className="request-console" style={rootStyle}>
       <CollectionSidebar
         savedRequests={savedRequests}
         history={history}
@@ -128,15 +153,33 @@ export default function RequestConsole({ backendConfig, projectKey }) {
             onDuplicate={duplicateTab}
             onNewTab={openBlankTab}
           />
-          <EnvironmentBar environments={environments} />
+          <div className="rc-top-row-controls">
+            <AccentPicker
+              accent={accent}
+              options={accentOptions}
+              onChange={setAccent}
+            />
+            <EnvironmentBar environments={environments} />
+          </div>
         </div>
 
-        <UrlBar tab={activeTab} onChange={handleChange} onSend={handleSend} onSave={handleSave} isSending={isSending} />
+        <UrlBar
+          tab={activeTab}
+          onChange={handleChange}
+          onSend={handleSend}
+          onSave={handleSave}
+          isSending={isSending}
+        />
 
         <SplitPane
           storageKey="request-console:split-ratio"
           top={<RequestPanel tab={activeTab} onChange={handleChange} />}
-          bottom={<ResponsePanel response={activeTab.response} isSending={isSending} />}
+          bottom={
+            <ResponsePanel
+              response={activeTab.response}
+              isSending={isSending}
+            />
+          }
         />
 
         <ConsoleLog entries={logEntries} onClear={clearLog} />
