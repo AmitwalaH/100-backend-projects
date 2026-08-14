@@ -8,6 +8,17 @@ const METHOD_COLORS = {
   DELETE: "#dc2626",
 };
 
+// PATCH's amber background fails contrast with white text at badge sizes;
+// every other method's background is dark enough for white text to work
+// fine, so PATCH alone gets dark text instead of touching its color.
+const METHOD_TEXT_COLORS = {
+  PATCH: "#111827",
+};
+
+function methodTextColor(method) {
+  return METHOD_TEXT_COLORS[method] || "#fff";
+}
+
 function statusColor(status) {
   if (typeof status !== "number") return "#6b7280";
   if (status >= 200 && status < 300) return "#16a34a";
@@ -18,7 +29,8 @@ function statusColor(status) {
 
 function bytesOf(value) {
   try {
-    return new Blob([typeof value === "string" ? value : JSON.stringify(value)]).size;
+    return new Blob([typeof value === "string" ? value : JSON.stringify(value)])
+      .size;
   } catch {
     return 0;
   }
@@ -36,7 +48,9 @@ export default function ProjectApiRunner({ backendConfig }) {
   const [editorValueByIndex, setEditorValueByIndex] = useState(() => {
     if (!backendConfig?.calls) return {};
     return backendConfig.calls.reduce((map, call, index) => {
-      map[index] = call.requestBody ? JSON.stringify(call.requestBody, null, 2) : "";
+      map[index] = call.requestBody
+        ? JSON.stringify(call.requestBody, null, 2)
+        : "";
       return map;
     }, {});
   });
@@ -139,7 +153,6 @@ export default function ProjectApiRunner({ backendConfig }) {
 
   return (
     <div className="apibase-runner">
-      {/* Saved-request style tab strip along the top, one per endpoint */}
       <div className="apibase-endpoint-tabs">
         {backendConfig.calls.map((c, index) => (
           <button
@@ -150,7 +163,9 @@ export default function ProjectApiRunner({ backendConfig }) {
           >
             <span
               className="apibase-endpoint-tab-method"
-              style={{ color: METHOD_COLORS[c.method.toUpperCase()] || "#6b7280" }}
+              style={{
+                color: METHOD_COLORS[c.method.toUpperCase()] || "#6b7280",
+              }}
             >
               {c.method.toUpperCase()}
             </span>
@@ -159,23 +174,31 @@ export default function ProjectApiRunner({ backendConfig }) {
         ))}
       </div>
 
-      {/* URL bar: method badge + full url + Send button */}
       <div className="apibase-url-bar">
         <span
           className="apibase-method-badge"
-          style={{ background: METHOD_COLORS[method] || "#6b7280" }}
+          style={{
+            background: METHOD_COLORS[method] || "#6b7280",
+            color: methodTextColor(method),
+          }}
         >
           {method}
         </span>
         <code className="apibase-url-input">{fullUrl}</code>
-        <button className="apibase-send-btn" onClick={runCall} disabled={isRunning} type="button">
-          {isRunning ? "Sending…" : "Send"}
+        <button
+          className="apibase-send-btn"
+          onClick={runCall}
+          disabled={isRunning}
+          type="button"
+        >
+          {isRunning ? "Sending..." : "Send"}
         </button>
       </div>
 
-      {call.description && <p className="apibase-description">{call.description}</p>}
+      {call.description && (
+        <p className="apibase-description">{call.description}</p>
+      )}
 
-      {/* Request panel: Body / Headers tabs */}
       <div className="apibase-request-panel">
         <div className="apibase-tab-strip">
           <button
@@ -204,7 +227,9 @@ export default function ProjectApiRunner({ backendConfig }) {
               aria-label={`Request body for ${method} ${call.path}`}
             />
           ) : (
-            <div className="apibase-empty-note">{method} requests don't send a body.</div>
+            <div className="apibase-empty-note">
+              {method} requests don't send a body.
+            </div>
           ))}
 
         {requestTab === "headers" && (
@@ -217,25 +242,35 @@ export default function ProjectApiRunner({ backendConfig }) {
         )}
       </div>
 
-      {/* Response panel */}
       {result && (
         <div className="apibase-response-panel">
           <div className="apibase-response-summary">
             <span className="apibase-response-label">Response</span>
             {typeof result.status === "number" ? (
-              <span className="apibase-status-chip" style={{ color: statusColor(result.status) }}>
+              <span
+                className="apibase-status-chip"
+                style={{ color: statusColor(result.status) }}
+              >
                 {result.status} {result.statusText || ""}
               </span>
             ) : result.status === "running" ? (
-              <span className="apibase-status-chip apibase-status-running">Sending…</span>
+              <span className="apibase-status-chip apibase-status-running">
+                Sending...
+              </span>
             ) : (
-              <span className="apibase-status-chip apibase-status-error">Error</span>
+              <span className="apibase-status-chip apibase-status-error">
+                Error
+              </span>
             )}
             {typeof result.timelineMs === "number" && (
-              <span className="apibase-response-meta">{result.timelineMs} ms</span>
+              <span className="apibase-response-meta">
+                {result.timelineMs} ms
+              </span>
             )}
             {result.body != null && (
-              <span className="apibase-response-meta">{bytesOf(result.body)} B</span>
+              <span className="apibase-response-meta">
+                {bytesOf(result.body)} B
+              </span>
             )}
           </div>
 
@@ -267,7 +302,9 @@ export default function ProjectApiRunner({ backendConfig }) {
 
               {responseTab === "body" && (
                 <pre className="apibase-response-body">
-                  {result.error ? result.error : JSON.stringify(result.body, null, 2)}
+                  {result.error
+                    ? result.error
+                    : JSON.stringify(result.body, null, 2)}
                 </pre>
               )}
 
@@ -281,7 +318,9 @@ export default function ProjectApiRunner({ backendConfig }) {
                       </div>
                     ))
                   ) : (
-                    <div className="apibase-empty-note">No response headers captured.</div>
+                    <div className="apibase-empty-note">
+                      No response headers captured.
+                    </div>
                   )}
                 </div>
               )}

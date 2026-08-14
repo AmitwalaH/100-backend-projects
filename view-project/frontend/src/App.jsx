@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -12,7 +12,7 @@ import { useProjectFilter } from "./hooks/useProjectFilter";
 
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
-import Sidebar from "./components/layout/Sidebar";
+import CommandPalette from "./components/projects/CommandPalette";
 import WelcomeScreen from "./components/projects/WelcomeScreen";
 import ProjectDetail from "./components/projects/ProjectDetail";
 import ProjectPage from "./components/projects/ProjectPage";
@@ -32,18 +32,15 @@ function toSlug(project) {
   );
 }
 
-function Shell({ theme, onToggleTheme }) {
+function Shell() {
   const navigate = useNavigate();
   const { slug } = useParams();
 
-  const {
-    search,
-    setSearch,
-    activeCategory,
-    setActiveCategory,
-    categories,
-    filtered,
-  } = useProjectFilter(projectsData);
+  // Sidebar is gone, but prev/next on the detail page still walks the
+  // filtered list, so the hook stays — it just defaults to the full
+  // project list now since nothing drives search/activeCategory anymore
+  // except the command palette handing us an initial category below.
+  const { filtered } = useProjectFilter(projectsData);
 
   // Find selected project from URL slug
   const selected = useMemo(
@@ -70,22 +67,8 @@ function Shell({ theme, onToggleTheme }) {
 
   return (
     <>
-      <Navbar theme={theme} onToggleTheme={onToggleTheme} />
+      <Navbar />
       <div className="shell">
-        <Sidebar
-          projects={projectsData}
-          filtered={filtered}
-          selectedId={selected?.id ?? null}
-          onSelect={handleSelect}
-          search={search}
-          onSearchChange={setSearch}
-          categories={categories}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-          theme={theme}
-          onToggleTheme={onToggleTheme}
-        />
-
         <main className="main">
           <GridErrorBoundary>
             {selected ? (
@@ -101,60 +84,34 @@ function Shell({ theme, onToggleTheme }) {
           </GridErrorBoundary>
         </main>
       </div>
+      <CommandPalette onSelect={handleSelect} />
       <Footer />
     </>
   );
 }
 
 export default function App() {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") return "light";
-    return (
-      window.localStorage.getItem("apiExplorerTheme") ||
-      (window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light")
-    );
-  });
-
+  // Single permanent theme — dark. The html[data-theme="dark"] CSS rules
+  // already cover every screen, so we just force the attribute on once.
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("apiExplorerTheme", theme);
-  }, [theme]);
-
-  function toggleTheme() {
-    setTheme((current) => (current === "dark" ? "light" : "dark"));
-  }
+    document.documentElement.dataset.theme = "dark";
+  }, []);
 
   return (
     <BrowserRouter>
       <Routes>
         {/* Both routes render the same Shell — slug presence determines what's shown */}
-        <Route
-          path="/"
-          element={<Shell theme={theme} onToggleTheme={toggleTheme} />}
-        />
-        <Route
-          path="/project/:slug"
-          element={<Shell theme={theme} onToggleTheme={toggleTheme} />}
-        />
-        <Route
-          path="/project-page/:slug"
-          element={
-            <ProjectPageShell theme={theme} onToggleTheme={toggleTheme} />
-          }
-        />
+        <Route path="/" element={<Shell />} />
+        <Route path="/project/:slug" element={<Shell />} />
+        <Route path="/project-page/:slug" element={<ProjectPageShell />} />
         {/* Catch-all: redirect unknown paths to home */}
-        <Route
-          path="*"
-          element={<Shell theme={theme} onToggleTheme={toggleTheme} />}
-        />
+        <Route path="*" element={<Shell />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-function ProjectPageShell({ theme, onToggleTheme }) {
+function ProjectPageShell() {
   const { slug } = useParams();
 
   const selected = useMemo(
@@ -164,7 +121,7 @@ function ProjectPageShell({ theme, onToggleTheme }) {
 
   return (
     <>
-      <Navbar theme={theme} onToggleTheme={onToggleTheme} />
+      <Navbar />
       <div className="shell">
         <main className="main">
           <GridErrorBoundary>
@@ -172,6 +129,7 @@ function ProjectPageShell({ theme, onToggleTheme }) {
           </GridErrorBoundary>
         </main>
       </div>
+      <CommandPalette />
       <Footer />
     </>
   );
