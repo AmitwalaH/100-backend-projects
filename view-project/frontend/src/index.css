@@ -1170,6 +1170,11 @@ body {
 
 /* -- Project page: console mode -------------------------------------- */
 .project-page-console-mode {
+  /* Navbar/Footer are no longer rendered on this route, so .main is the
+     only thing above/below this box — height: 100% lets it exactly fill
+     .main's box (which itself gets a definite height from #root's
+     100vh flex column) instead of guessing a pixel offset. */
+  height: 100%;
   max-width: 1600px;
   padding: 22px 40px 40px;
   display: flex;
@@ -1232,17 +1237,30 @@ body {
 }
 
 .project-page-console-mode .request-console {
-  min-height: calc(100vh - 210px);
+  /* Was a viewport-relative calc() tuned for when Navbar+Footer were
+     still on this route — now that they're gone, that pixel offset is
+     stale. flex: 1 + min-height: 0 makes this fill whatever space is
+     actually left after the topbar above it, self-adjusting instead of
+     depending on a hardcoded number that has to be re-tuned every time
+     the surrounding layout changes. */
+  flex: 1;
+  min-height: 0;
   border-radius: 10px;
   box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {
   .project-page-console-mode {
+    /* On mobile, .main/.shell/#root switch to natural document flow
+       (see the mobile overrides above) rather than a fixed 100vh box —
+       so this page is allowed to scroll normally there, matching that
+       existing pattern instead of forcing an artificial fixed height. */
+    height: auto;
     padding: 16px 16px 28px;
   }
   .project-page-console-mode .request-console {
-    min-height: calc(100vh - 260px);
+    flex: none;
+    min-height: 70vh;
     flex-direction: column;
   }
 }

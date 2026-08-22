@@ -120,17 +120,12 @@ function ProjectPageShell() {
   );
 
   return (
-    <>
-      <Navbar />
-      <div className="shell">
-        <main className="main">
-          <GridErrorBoundary>
-            {selected ? <ProjectPage project={selected} /> : <WelcomeScreen />}
-          </GridErrorBoundary>
-        </main>
-      </div>
-      <CommandPalette />
-      <Footer />
-    </>
+    <div className="shell">
+      <main className="main">
+        <GridErrorBoundary>
+          {selected ? <ProjectPage project={selected} /> : <WelcomeScreen />}
+        </GridErrorBoundary>
+      </main>
+    </div>
   );
 }

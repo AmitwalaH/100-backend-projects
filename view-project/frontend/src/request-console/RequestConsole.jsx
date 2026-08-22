@@ -19,6 +19,8 @@ import ResponsePanel from "./components/ResponsePanel";
 import SplitPane from "./components/SplitPane";
 import ConsoleLog from "./components/ConsoleLog";
 
+const SIDEBAR_COLLAPSED_KEY = "request-console:sidebar-collapsed";
+
 /**
  * Top-level request console for one project. projectKey scopes tabs,
  * saved requests, and history to this project; environments and the
@@ -47,6 +49,30 @@ export default function RequestConsole({ backendConfig, projectKey }) {
   const { accent, setAccent, options: accentOptions } = useAccentColor();
 
   const [isSending, setIsSending] = useState(false);
+
+  // Sidebar is empty a lot of the time ("No saved requests yet") and
+  // permanently ate 250px regardless — every real API client (Postman,
+  // Insomnia, Hoppscotch) makes this collapsible for exactly that reason.
+  // Persisted the same way SplitPane already persists its split ratio.
+  const [isSidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarCollapsed((current) => {
+      const next = !current;
+      try {
+        window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0");
+      } catch {
+        // non-fatal
+      }
+      return next;
+    });
+  }, []);
 
   const rootStyle = useMemo(
     () => ({ "--rc-accent": accent.base, "--rc-accent-hover": accent.hover }),
@@ -133,7 +159,12 @@ export default function RequestConsole({ backendConfig, projectKey }) {
   if (!activeTab) return null;
 
   return (
-    <div className="request-console" style={rootStyle}>
+    <div
+      className={
+        "request-console" + (isSidebarCollapsed ? " sidebar-collapsed" : "")
+      }
+      style={rootStyle}
+    >
       <CollectionSidebar
         savedRequests={savedRequests}
         history={history}
@@ -142,6 +173,17 @@ export default function RequestConsole({ backendConfig, projectKey }) {
         onOpenHistoryEntry={handleOpenHistoryEntry}
         onClearHistory={clearHistory}
       />
+
+      <button
+        type="button"
+        className="rc-sidebar-toggle"
+        onClick={toggleSidebar}
+        aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-expanded={!isSidebarCollapsed}
+        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {isSidebarCollapsed ? "\u203A" : "\u2039"}
+      </button>
 
       <div className="rc-main-column">
         <div className="rc-top-row">
