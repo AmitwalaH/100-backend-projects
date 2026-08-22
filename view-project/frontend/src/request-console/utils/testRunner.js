@@ -35,18 +35,33 @@ function coerce(rawValue) {
   return trimmed;
 }
 
+// Was: check each comparator in a fixed priority order and take the
+// first one found ANYWHERE in the line — so a line like
+// "responseTime < 800 == fast" would incorrectly split on the "=="
+// buried in the trailing text instead of the real "<" operator, since
+// "==" is checked before "<" regardless of position. Now finds whichever
+// comparator actually occurs LEFTMOST, breaking ties in favor of the
+// longer operator (so "<=" wins over a bare "<" that starts at the same
+// index).
 function splitOnComparator(line) {
+  let best = null;
   for (const comparator of COMPARATORS) {
     const index = line.indexOf(comparator);
-    if (index !== -1) {
-      return {
-        left: line.slice(0, index).trim(),
-        comparator,
-        right: line.slice(index + comparator.length).trim(),
-      };
+    if (index === -1) continue;
+    if (
+      best === null ||
+      index < best.index ||
+      (index === best.index && comparator.length > best.comparator.length)
+    ) {
+      best = { index, comparator };
     }
   }
-  return null;
+  if (!best) return null;
+  return {
+    left: line.slice(0, best.index).trim(),
+    comparator: best.comparator,
+    right: line.slice(best.index + best.comparator.length).trim(),
+  };
 }
 
 function compare(actual, comparator, expected) {
@@ -83,7 +98,9 @@ function evaluateLine(rawLine, context) {
     const match = line.match(/^header\[([^\]]+)\]\s+contains\s+(.+)$/);
     const headerName = match[1].trim().toLowerCase();
     const needle = match[2].trim().toLowerCase();
-    const headerValue = String(context.headers?.[headerName] ?? "").toLowerCase();
+    const headerValue = String(
+      context.headers?.[headerName] ?? "",
+    ).toLowerCase();
     const passed = headerValue.includes(needle);
     return {
       description: line,
@@ -124,7 +141,8 @@ function evaluateLine(rawLine, context) {
   if (line.startsWith("status") || line.startsWith("responseTime")) {
     const split = splitOnComparator(line);
     if (!split) return invalidLine(line);
-    const actual = split.left === "status" ? context.status : context.responseTime;
+    const actual =
+      split.left === "status" ? context.status : context.responseTime;
     const expected = coerce(split.right);
     const passed = compare(actual, split.comparator, expected);
     return {

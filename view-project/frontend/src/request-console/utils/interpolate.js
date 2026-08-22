@@ -20,12 +20,27 @@ export function interpolate(input, variables) {
   });
 }
 
-/** Recursively interpolates every string value in a plain object. */
-export function interpolateObject(obj, variables) {
-  if (!obj || typeof obj !== "object") return obj;
-  const out = {};
-  for (const [key, value] of Object.entries(obj)) {
-    out[key] = typeof value === "string" ? interpolate(value, variables) : value;
+/**
+ * Recursively interpolates every string value in a plain object or
+ * array — was previously only walking the top level despite the name/
+ * docstring saying "recursively," so a nested body like
+ * {"user": {"email": "{{userEmail}}"}} left the nested placeholder
+ * completely unresolved. Nested JSON bodies are the common case for a
+ * REST client, not the exception, so this was a real correctness gap.
+ */
+export function interpolateObject(value, variables) {
+  if (typeof value === "string") {
+    return interpolate(value, variables);
   }
-  return out;
+  if (Array.isArray(value)) {
+    return value.map((item) => interpolateObject(item, variables));
+  }
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [key, val] of Object.entries(value)) {
+      out[key] = interpolateObject(val, variables);
+    }
+    return out;
+  }
+  return value;
 }
