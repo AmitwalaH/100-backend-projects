@@ -1,13 +1,11 @@
 import { SITE } from "../../constants";
 import { useGithubStats } from "../../hooks/useGithubStats";
 import projectsData from "../../../../../project-manifest.json";
+import ProjectGrid from "./ProjectGrid";
 
 const totalCategories = new Set(projectsData.map((p) => p.category)).size;
 const totalTechs = new Set(projectsData.flatMap((p) => p.tech)).size;
 
-// Belt-and-braces: inline styles here beat any class-based override no
-// matter what's causing it, so the numbers are guaranteed visible. If
-// they're STILL blank after this, the problem is the data, not the CSS.
 const numStyle = {
   fontFamily: "var(--mono)",
   fontSize: "1.75rem",
@@ -24,7 +22,7 @@ const labelStyle = {
   marginTop: "8px",
 };
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ onSelectProject }) {
   const { stats } = useGithubStats(SITE.author, SITE.repoName);
 
   return (
@@ -76,22 +74,26 @@ export default function WelcomeScreen() {
             stacks
           </div>
         </div>
-        {stats && (
-          <div className="stat-cell">
-            <div className="stat-num" style={numStyle}>
-              {stats.stars}
-            </div>
-            <div className="stat-label" style={labelStyle}>
-              stars
-            </div>
+        {/* Was conditionally rendered only once GitHub stats resolved —
+            the stat bar visibly grew/shifted after load. Always reserving
+            the cell (with a loading placeholder) avoids that layout shift. */}
+        <div className="stat-cell">
+          <div className="stat-num" style={numStyle}>
+            {stats ? stats.stars : "—"}
           </div>
-        )}
+          <div className="stat-label" style={labelStyle}>
+            stars
+          </div>
+        </div>
       </div>
 
       <p className="welcome-hint">
-        Press <span className="welcome-hint-kbd">⌘K</span> to browse or search
-        projects
+        Press <span className="welcome-hint-kbd">⌘K</span> to search, or browse
+        below
       </p>
+
+      <div className="section-eyebrow all-projects-eyebrow">all_projects</div>
+      <ProjectGrid projects={projectsData} onSelect={onSelectProject} />
     </div>
   );
 }

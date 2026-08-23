@@ -27,6 +27,12 @@
   --orange: #e08a4a;
   --line: #211f19;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Figtree was imported at the top of this file but never actually
+     used anywhere — every rule used --mono, including long paragraph
+     copy (welcome-sub, detail-tagline), which reads worse in monospace
+     at length than a proper body font. Using it for body copy while
+     keeping mono for headings/labels/UI chrome. */
+  --sans: "Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 html {
@@ -471,8 +477,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
+  /* Was justify-content: center, fine when this was a short page. Now
+     that a 51-card grid always renders below, centering the whole
+     column vertically would push the title/prompt above the fold on
+     load instead of starting at the top like a normal page. */
+  justify-content: flex-start;
+  min-height: 100%;
   text-align: center;
   padding: 40px 32px;
 }
@@ -570,6 +580,7 @@ body {
   vertical-align: -2px;
 }
 .welcome-sub {
+  font-family: var(--sans);
   font-size: 0.98rem;
   color: var(--dim);
   max-width: 420px;
@@ -630,6 +641,113 @@ body {
   font-size: 0.72rem;
   color: var(--dim);
   background: var(--panel);
+}
+
+/* -- Project grid (homepage browse view) -------------------------------
+   Was previously the site's biggest UX gap: a portfolio for 51 projects
+   that showed zero of them by default, only a search trigger. This is
+   now the actual browse path, with search/⌘K as the supplementary
+   shortcut it's meant to be rather than the only way in.
+------------------------------------------------------------------- */
+.all-projects-eyebrow {
+  margin-top: 56px;
+  text-align: center;
+}
+
+.project-grid {
+  width: 100%;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  text-align: left;
+  padding-bottom: 24px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  cursor: pointer;
+  font-family: var(--mono);
+  text-align: left;
+  color: inherit;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.12s;
+}
+
+.project-card:hover {
+  border-color: var(--grn);
+  background: var(--panel-hover);
+  transform: translateY(-2px);
+}
+
+.project-card:focus-visible {
+  outline: none;
+  border-color: var(--grn);
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--grn);
+}
+
+.project-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.project-card-num {
+  font-size: 0.7rem;
+  color: var(--faint);
+}
+
+.project-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.project-card-desc {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--dim);
+  line-height: 1.55;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-card-tech-more {
+  color: var(--faint);
+}
+
+@media (max-width: 768px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* -- Detail ------------------------------------------------------------ */
@@ -714,7 +832,7 @@ body {
 }
 
 .detail-tagline {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 0.98rem;
   font-weight: 400;
   color: var(--fg);

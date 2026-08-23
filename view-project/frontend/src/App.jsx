@@ -79,7 +79,7 @@ function Shell() {
                 onNavigate={handleSelect}
               />
             ) : (
-              <WelcomeScreen />
+              <WelcomeScreen onSelectProject={handleSelect} />
             )}
           </GridErrorBoundary>
         </main>
@@ -113,6 +113,7 @@ export default function App() {
 
 function ProjectPageShell() {
   const { slug } = useParams();
+  const navigate = useNavigate();
 
   const selected = useMemo(
     () => projectsData.find((p) => toSlug(p) === slug) ?? null,
@@ -123,7 +124,15 @@ function ProjectPageShell() {
     <div className="shell">
       <main className="main">
         <GridErrorBoundary>
-          {selected ? <ProjectPage project={selected} /> : <WelcomeScreen />}
+          {selected ? (
+            <ProjectPage project={selected} />
+          ) : (
+            <WelcomeScreen
+              onSelectProject={(project) =>
+                navigate(`/project/${toSlug(project)}`)
+              }
+            />
+          )}
         </GridErrorBoundary>
       </main>
     </div>
