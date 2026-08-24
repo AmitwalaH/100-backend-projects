@@ -42,6 +42,29 @@ export function useReachability(url) {
     }
   }, []);
 
+  // Was: `const pollLoop = useCallback(async (targetUrl, requestId) => { ...
+  // setTimeout(() => pollLoop(...)) ... })` — pollLoop referencing itself
+  // through the OUTER const binding works at runtime here (the self-call
+  // is deferred, never invoked synchronously during its own assignment),
+  // but it's a fragile pattern that a linter correctly flags: it's
+  // relying on closure/TDZ timing rather than real self-reference.
+  // A named function expression sidesteps this entirely — `poll` is
+  // available inside its own body via its own binding, regardless of
+  // when/whether the outer `pollLoop` const has finished being assigned.
+  const pollLoop = useCallback(
+    async function poll(targetUrl, requestId) {
+      const ok = await checkOnce(targetUrl, requestId);
+      if (requestIdRef.current !== requestId) return;
+      if (!ok) {
+        timerRef.current = setTimeout(
+          () => poll(targetUrl, requestId),
+          POLL_INTERVAL_MS,
+        );
+      }
+    },
+    [checkOnce],
+  );
+
   useEffect(() => {
     const requestId = (requestIdRef.current += 1);
     let stopped = false;
@@ -54,29 +77,22 @@ export function useReachability(url) {
       }
     });
 
-    async function loop() {
-      const ok = await checkOnce(url, requestId);
-
-      if (stopped || requestIdRef.current !== requestId) {
-        return;
-      }
-
-      if (!ok) {
-        timerRef.current = setTimeout(loop, POLL_INTERVAL_MS);
-      }
-    }
-
-    loop();
+    pollLoop(url, requestId);
 
     return () => {
       stopped = true;
+      // Also invalidates any in-flight checkOnce() fetch from this
+      // effect run — without this, a fetch that resolves after unmount
+      // would still pass the requestIdRef comparison and call setState
+      // on an unmounted component.
+      requestIdRef.current += 1;
 
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
       }
     };
-  }, [url, checkOnce]);
+  }, [url, pollLoop]);
 
   const retry = useCallback(() => {
     if (timerRef.current) {
@@ -86,17 +102,8 @@ export function useReachability(url) {
 
     const requestId = (requestIdRef.current += 1);
     setStatus("checking");
-
-    checkOnce(url, requestId).then((ok) => {
-      if (!ok && requestIdRef.current === requestId) {
-        timerRef.current = setTimeout(() => {
-          // Start a fresh polling cycle.
-          const nextRequestId = (requestIdRef.current += 1);
-          checkOnce(url, nextRequestId);
-        }, POLL_INTERVAL_MS);
-      }
-    });
-  }, [url, checkOnce]);
+    pollLoop(url, requestId);
+  }, [url, pollLoop]);
 
   return { status, retry };
 }

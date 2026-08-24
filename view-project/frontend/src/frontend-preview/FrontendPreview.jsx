@@ -97,10 +97,15 @@ export default function FrontendPreview({
           </div>
         )}
 
-        {status === "reachable" && (
+        {/* activePage guarded with optional chaining: if frontendConfig
+            ever shrinks while this is mounted (fewer pages than before),
+            activeIndex could briefly be out of range for one render pass
+            before useReachability's effect catches up to the new (null)
+            activeUrl — activePage.label would throw in that window. */}
+        {status === "reachable" && activePage && (
           <iframe
             key={activeUrl}
-            title={activePage.label}
+            title={activePage?.label}
             src={activeUrl}
             className="fp-frame"
           />

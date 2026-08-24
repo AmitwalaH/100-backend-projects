@@ -123,38 +123,59 @@ export function useRequestTabs(projectKey, backendConfig) {
     return tab.id;
   }, []);
 
+  // closeTab/duplicateTab previously called setActiveTabId as a SIDE
+  // EFFECT inside the setTabs(current => ...) updater function. React 18
+  // Strict Mode intentionally double-invokes updater functions in dev to
+  // catch exactly this pattern — since blankTab()/createId() generate a
+  // new id every call, a double-invocation could call setActiveTabId
+  // twice with two DIFFERENT ids, leaving activeTabId pointing at a tab
+  // that was never actually committed to `tabs`. When that happens,
+  // activeTab resolves to null and the whole console disappears (see
+  // RequestConsole's `if (!activeTab) return null`). Fixed by reading
+  // from `tabs` directly (now a real dependency) and calling setTabs/
+  // setActiveTabId as separate, plain calls instead of nesting one
+  // inside the other's updater.
   const closeTab = useCallback(
     (tabId) => {
-      setTabs((current) => {
-        const remaining = current.filter((t) => t.id !== tabId);
-        if (remaining.length === 0) {
-          const fresh = blankTab();
-          setActiveTabId(fresh.id);
-          return [fresh];
-        }
-        if (tabId === activeTabId) {
-          const closedIndex = current.findIndex((t) => t.id === tabId);
-          const fallback = remaining[Math.max(0, closedIndex - 1)];
-          setActiveTabId(fallback.id);
-        }
-        return remaining;
-      });
+      const remaining = tabs.filter((t) => t.id !== tabId);
+
+      if (remaining.length === 0) {
+        const fresh = blankTab();
+        setTabs([fresh]);
+        setActiveTabId(fresh.id);
+        return;
+      }
+
+      if (tabId === activeTabId) {
+        const closedIndex = tabs.findIndex((t) => t.id === tabId);
+        const fallback = remaining[Math.max(0, closedIndex - 1)];
+        setActiveTabId(fallback.id);
+      }
+
+      setTabs(remaining);
     },
-    [activeTabId],
+    [tabs, activeTabId],
   );
 
-  const duplicateTab = useCallback((tabId) => {
-    setTabs((current) => {
-      const source = current.find((t) => t.id === tabId);
-      if (!source) return current;
-      const copy = { ...source, id: createId("tab"), name: `${source.name} copy`, savedRequestId: null, response: null };
-      const index = current.findIndex((t) => t.id === tabId);
-      const next = [...current];
+  const duplicateTab = useCallback(
+    (tabId) => {
+      const source = tabs.find((t) => t.id === tabId);
+      if (!source) return;
+      const copy = {
+        ...source,
+        id: createId("tab"),
+        name: `${source.name} copy`,
+        savedRequestId: null,
+        response: null,
+      };
+      const index = tabs.findIndex((t) => t.id === tabId);
+      const next = [...tabs];
       next.splice(index + 1, 0, copy);
+      setTabs(next);
       setActiveTabId(copy.id);
-      return next;
-    });
-  }, []);
+    },
+    [tabs],
+  );
 
   return {
     tabs,
