@@ -1,0 +1,1295 @@
+/* -- Request Console -------------------------------------------------
+   Scoped under .request-console. Reuses the app's existing tokens
+   (Figtree / JetBrains Mono, #111827 / #2563eb / var(--rc-accent) palette)
+   rather than introducing a second design language.
+------------------------------------------------------------------- */
+
+.request-console {
+  --rc-accent: #ea580c;
+  --rc-accent-hover: #c2410c;
+  display: flex;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  min-height: 640px;
+  font-size: 1.02rem;
+}
+
+/* -- Collection sidebar (Saved / History) ------------------------- */
+.rc-collection-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+  border-right: 1px solid #e5e7eb;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  transition:
+    width 0.15s ease,
+    opacity 0.1s ease;
+  overflow: hidden;
+}
+
+/* Collapsing to width: 0 rather than unmounting keeps scroll position
+   and open folders intact for when it's expanded again. */
+.request-console.sidebar-collapsed .rc-collection-sidebar {
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+  border-right: none;
+  pointer-events: none;
+}
+
+.rc-sidebar-toggle {
+  flex-shrink: 0;
+  width: 16px;
+  border: none;
+  border-right: 1px solid #e5e7eb;
+  background: #f8fafc;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.12s,
+    background 0.12s;
+}
+
+.rc-sidebar-toggle:hover {
+  color: #111827;
+  background: #eef2f7;
+}
+
+.rc-sidebar-toggle:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--rc-accent);
+}
+
+html[data-theme="dark"] .rc-sidebar-toggle {
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
+  color: var(--dim, #8b8270);
+}
+
+html[data-theme="dark"] .rc-sidebar-toggle:hover {
+  color: var(--fg, #d8d3c5);
+  background: var(--panel-hover, #1d1a14);
+}
+
+.rc-collection-tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rc-collection-tabs button {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+}
+
+.rc-collection-tabs button.active {
+  color: #111827;
+  border-bottom-color: var(--rc-accent);
+}
+
+.rc-collection-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.rc-collection-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  font-size: 0.68rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rc-history-clear {
+  border: none;
+  background: none;
+  color: var(--rc-accent);
+  font-size: 0.68rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.rc-collection-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.rc-collection-item:hover {
+  background: #eef2f7;
+}
+
+.rc-collection-item-method {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 0.68rem;
+  flex-shrink: 0;
+  width: 42px;
+}
+
+.rc-collection-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #374151;
+}
+
+.rc-collection-item-status {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.rc-collection-item-status.ok {
+  color: #16a34a;
+}
+
+.rc-collection-item-status.err {
+  color: #dc2626;
+}
+
+.rc-collection-item-remove {
+  border: none;
+  background: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.rc-collection-item-remove:hover {
+  color: #dc2626;
+}
+
+/* -- Main column --------------------------------------------------- */
+.rc-main-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rc-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafafa;
+}
+
+/* -- Tab bar ------------------------------------------------------- */
+.rc-tab-bar {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.rc-tab-scroll {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.rc-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 12px 12px 14px;
+  border-right: 1px solid #e5e7eb;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #6b7280;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rc-tab.active {
+  background: #fff;
+  color: #111827;
+  box-shadow: inset 0 -2px 0 var(--rc-accent);
+}
+
+/* .rc-tab is now keyboard-focusable (roving tabindex) — needs its own
+   visible focus state since a plain div gets no reliable default one. */
+.rc-tab:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--rc-accent);
+}
+
+.rc-tab-method {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 0.68rem;
+}
+
+.rc-tab-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rc-tab-dirty {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rc-accent);
+  flex-shrink: 0;
+}
+
+.rc-tab-close {
+  border: none;
+  background: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.rc-tab-close:hover {
+  color: #dc2626;
+}
+
+.rc-tab-new {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  width: 34px;
+  height: 34px;
+  font-size: 1.1rem;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.rc-tab-new:hover {
+  color: #111827;
+}
+
+/* -- Environment bar ----------------------------------------------- */
+.rc-environment-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+}
+
+.rc-environment-select,
+.rc-select {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.76rem;
+  font-family: inherit;
+  color: #374151;
+  background: #fff;
+}
+
+.rc-environment-gear,
+.rc-environment-add {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  padding: 5px 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  color: #374151;
+}
+
+.rc-environment-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  width: 340px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.18);
+  padding: 12px;
+}
+
+.rc-environment-popover-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.rc-environment-name-input {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.rc-environment-delete {
+  border: none;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.rc-environment-empty-note {
+  color: #6b7280;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* -- URL bar ------------------------------------------------------- */
+.rc-url-bar-wrap {
+  padding: 16px 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rc-url-bar {
+  display: flex;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.rc-url-bar:focus-within {
+  border-color: var(--rc-accent);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
+}
+
+.rc-method-select {
+  border: none;
+  background: #f8fafc;
+  padding: 0 18px;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-right: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.rc-url-input {
+  flex: 1;
+  border: none;
+  padding: 15px 16px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.95rem;
+  color: #111827;
+  outline: none;
+  min-width: 0;
+}
+
+.rc-send-btn {
+  border: none;
+  background: var(--rc-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 0 28px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rc-send-btn:hover:not(:disabled) {
+  background: var(--rc-accent-hover);
+}
+
+.rc-send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rc-save-btn {
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  background: #111827;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.86rem;
+  padding: 0 22px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.rc-save-btn:hover {
+  background: #1f2937;
+}
+
+.rc-url-bar-footer {
+  margin-top: 6px;
+}
+
+.rc-command-toggle {
+  border: none;
+  background: none;
+  color: #6b7280;
+  font-size: 0.72rem;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.rc-command-toggle:hover {
+  color: #111827;
+}
+
+.rc-command-block {
+  position: relative;
+  margin-top: 8px;
+  background: var(--bg, #0e0d0b);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.rc-command-block pre {
+  margin: 0;
+  color: var(--fg, #d8d3c5);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.76rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.rc-command-copy {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--fg, #d8d3c5);
+  font-size: 0.68rem;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+/* copyCommand() previously swallowed success and failure identically —
+   silence either way. Now it reports which one actually happened. */
+.rc-command-copy.copied {
+  background: rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
+.rc-command-copy.failed {
+  background: rgba(220, 38, 38, 0.35);
+  color: #fecaca;
+}
+
+/* -- Split pane ---------------------------------------------------- */
+.split-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.split-pane-top,
+.split-pane-bottom {
+  overflow: auto;
+  min-height: 80px;
+}
+
+.split-pane-divider {
+  height: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: row-resize;
+  background: #fafafa;
+  border-top: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Divider is now keyboard-operable (arrow keys / Home / End) via
+   tabIndex={0} — needs a visible focus state since it's a div, not a
+   native control. */
+.split-pane-divider:focus-visible {
+  outline: none;
+  background: #f1f5f9;
+  box-shadow: inset 0 0 0 2px var(--rc-accent);
+}
+
+.split-pane-grip {
+  width: 36px;
+  height: 3px;
+  border-radius: 3px;
+  background: #d1d5db;
+}
+
+/* -- Request / response shared panel chrome ----------------------- */
+.rc-request-panel,
+.rc-response-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.rc-panel-tab-strip {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.rc-panel-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: none;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+}
+
+.rc-panel-tab.active {
+  color: var(--rc-accent);
+  border-bottom-color: var(--rc-accent);
+}
+
+.rc-panel-tab-count {
+  background: #eef2f7;
+  color: #374151;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 9999px;
+}
+
+.rc-panel-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+.rc-panel-section {
+  height: 100%;
+}
+
+.rc-empty-note {
+  color: #9ca3af;
+  font-size: 0.82rem;
+  font-style: italic;
+  padding: 10px 2px;
+}
+
+/* -- Key/value table (shared: params, headers, form body, env vars) - */
+.kv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.kv-table thead th {
+  text-align: left;
+  font-size: 0.66rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  padding: 4px 6px;
+}
+
+.kv-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.kv-table-readonly td {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: #374151;
+  padding: 8px 6px;
+}
+
+.kv-col-toggle,
+.kv-col-remove {
+  width: 26px;
+}
+
+.kv-row-disabled .kv-input {
+  color: #b0b6c0;
+  text-decoration: line-through;
+}
+
+.kv-input {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px 7px;
+  font-size: 0.8rem;
+  font-family: "JetBrains Mono", monospace;
+  outline: none;
+  background: transparent;
+}
+
+.kv-input:focus {
+  border-color: var(--rc-accent);
+  background: #fff;
+}
+
+.kv-remove-btn {
+  border: none;
+  background: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.kv-remove-btn:hover {
+  color: #dc2626;
+}
+
+/* -- Auth editor --------------------------------------------------- */
+.rc-field {
+  margin-top: 12px;
+}
+
+.rc-field-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.rc-field-hint {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin: 6px 0 0;
+}
+
+.rc-text-input {
+  width: 100%;
+  max-width: 340px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  font-family: "JetBrains Mono", monospace;
+  outline: none;
+}
+
+.rc-text-input:focus {
+  border-color: var(--rc-accent);
+}
+
+.rc-timeout-input {
+  max-width: 140px;
+}
+
+.rc-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: #374151;
+}
+
+/* -- Body editor --------------------------------------------------- */
+.rc-body-mode-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.rc-body-mode-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #374151;
+  cursor: pointer;
+}
+
+.rc-body-textarea {
+  width: 100%;
+  min-height: 200px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.83rem;
+  resize: vertical;
+  outline: none;
+}
+
+.rc-body-textarea:focus {
+  border-color: var(--rc-accent);
+}
+
+/* -- Scripts editor ------------------------------------------------ */
+.rc-scripts-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  height: 100%;
+}
+
+.rc-scripts-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.rc-scripts-textarea {
+  flex: 1;
+  min-height: 160px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  resize: vertical;
+  outline: none;
+}
+
+.rc-scripts-textarea:focus {
+  border-color: var(--rc-accent);
+}
+
+/* -- Response panel ------------------------------------------------ */
+.rc-response-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.rc-status-chip {
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.82rem;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.rc-status-chip-error {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.14);
+}
+
+.rc-response-meta {
+  color: #6b7280;
+  font-size: 0.76rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.rc-download-btn {
+  margin-left: auto;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  color: #374151;
+}
+
+.rc-response-empty,
+.rc-response-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+/* Was borrowed by coincidence from the outer app's index.css, which
+   defines these only for ProjectApiRunner.jsx (now dead code, safe to
+   delete). ResponsePanel is very much alive and uses these same class
+   names for its loading state, so they need to live here — this file's
+   own comment says it's meant to be self-contained, so making that true. */
+.run-loading {
+  display: flex;
+  gap: 6px;
+  padding: 18px 0;
+  justify-content: center;
+}
+.run-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d1d5db;
+  animation: rc-run-pulse 1s ease-in-out infinite;
+}
+.run-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.run-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes rc-run-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+html[data-theme="dark"] .run-dot {
+  background: var(--faint, #3a352b);
+}
+
+.rc-response-body-toggle {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.rc-response-body-toggle button {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.rc-response-body-toggle button.active {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+.rc-response-body {
+  margin: 0;
+  background: var(--bg, #0e0d0b);
+  color: var(--fg, #d8d3c5);
+  border-radius: 10px;
+  padding: 18px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.rc-response-preview-frame {
+  width: 100%;
+  min-height: 300px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+/* -- Tests tab ----------------------------------------------------- */
+.rc-tests-summary {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.rc-tests-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.rc-test-pass,
+.rc-test-fail {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.rc-test-pass {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.rc-test-fail {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.rc-test-icon {
+  font-weight: 700;
+}
+
+/* -- Console log --------------------------------------------------- */
+.rc-console-log {
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.rc-console-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: #f8fafc;
+  padding: 8px 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.12s;
+}
+
+/* Was a dead class before — .rc-console-log's "open" modifier had no
+   rule targeting it at all. Now it actually does something: highlights
+   the toggle label so the open/closed state reads at a glance, not just
+   from whether the panel below happens to be present. */
+.rc-console-log.open .rc-console-toggle {
+  color: #111827;
+}
+
+html[data-theme="dark"] .rc-console-log.open .rc-console-toggle {
+  color: var(--fg, #d8d3c5);
+}
+
+/* Single rotating caret instead of swapping the glyph character (▾/▸) —
+   matches the same pattern already used for .rc-folder-caret below, so
+   the two expand/collapse affordances in this app read the same way. */
+.rc-console-caret {
+  display: inline-block;
+  font-size: 0.6rem;
+  transition: transform 0.12s;
+}
+
+.rc-console-toggle.open .rc-console-caret {
+  transform: rotate(90deg);
+}
+
+.rc-console-count {
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  margin: 0 4px;
+}
+
+.rc-console-body {
+  max-height: 220px;
+  overflow-y: auto;
+  border-top: 1px solid #e5e7eb;
+}
+
+.rc-console-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 14px;
+  font-size: 0.68rem;
+  color: #9ca3af;
+}
+
+.rc-console-clear {
+  border: none;
+  background: none;
+  color: var(--rc-accent);
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: inherit;
+}
+
+.rc-console-entries {
+  padding: 0 10px 10px;
+}
+
+.rc-console-entry {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.rc-console-entry-row {
+  display: flex;
+  gap: 10px;
+  padding: 6px 4px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.rc-console-entry-success .rc-console-message {
+  color: #16a34a;
+}
+
+.rc-console-entry-error .rc-console-message {
+  color: #dc2626;
+}
+
+.rc-console-time {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.rc-console-detail {
+  margin: 0 0 8px;
+  background: var(--bg, #0e0d0b);
+  color: var(--fg, #d8d3c5);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.72rem;
+  overflow-x: auto;
+}
+
+/* -- Dark theme -------------------------------------------------------
+   Was its own disconnected slate-blue palette (#0f172a / #1e293b /
+   #334155 / #e2e8f0) with no relation to the app's actual terminal
+   tokens (--bg / --panel / --fg / --grn etc, defined in index.css) —
+   that mismatch is the "blue" that didn't belong here at all.
+------------------------------------------------------------------- */
+html[data-theme="dark"] .request-console {
+  background: var(--panel, #161410);
+  border-color: var(--line, #211f19);
+}
+html[data-theme="dark"] .rc-collection-sidebar,
+html[data-theme="dark"] .rc-top-row,
+html[data-theme="dark"] .rc-console-toggle {
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
+}
+html[data-theme="dark"] .rc-tab,
+html[data-theme="dark"] .rc-panel-tab-strip,
+html[data-theme="dark"] .rc-url-bar-wrap,
+html[data-theme="dark"] .rc-response-summary,
+html[data-theme="dark"] .kv-table td,
+html[data-theme="dark"] .rc-console-log,
+html[data-theme="dark"] .rc-console-body {
+  border-color: var(--line, #211f19);
+}
+html[data-theme="dark"] .rc-tab.active {
+  background: var(--panel-hover, #1d1a14);
+  color: var(--fg, #d8d3c5);
+}
+html[data-theme="dark"] .rc-url-bar,
+html[data-theme="dark"] .rc-environment-select,
+html[data-theme="dark"] .rc-select,
+html[data-theme="dark"] .rc-environment-gear,
+html[data-theme="dark"] .rc-environment-add,
+html[data-theme="dark"] .rc-text-input,
+html[data-theme="dark"] .rc-body-textarea,
+html[data-theme="dark"] .rc-scripts-textarea,
+html[data-theme="dark"] .rc-download-btn,
+html[data-theme="dark"] .rc-response-body-toggle button,
+html[data-theme="dark"] .rc-environment-popover {
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
+  color: var(--fg, #d8d3c5);
+}
+html[data-theme="dark"] .rc-method-select {
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
+}
+html[data-theme="dark"] .rc-url-input {
+  background: transparent;
+  color: var(--fg, #d8d3c5);
+}
+html[data-theme="dark"] .kv-input:focus {
+  background: var(--panel-hover, #1d1a14);
+}
+html[data-theme="dark"] .rc-collection-item:hover {
+  background: var(--panel-hover, #1d1a14);
+}
+html[data-theme="dark"] .rc-tab-new:hover {
+  color: var(--fg, #d8d3c5);
+}
+html[data-theme="dark"] .rc-command-toggle:hover {
+  color: var(--fg, #d8d3c5);
+}
+
+/* This was the actual checkbox in your screenshot — native checkboxes
+   render the browser's default blue accent-color unless told otherwise.
+   Scoped to .request-console only. */
+html[data-theme="dark"] .request-console input[type="checkbox"] {
+  accent-color: var(--grn, #83c167);
+}
+html[data-theme="dark"] .rc-select:focus-visible,
+html[data-theme="dark"] .rc-environment-select:focus-visible,
+html[data-theme="dark"] .rc-method-select:focus-visible,
+html[data-theme="dark"] .rc-text-input:focus-visible {
+  outline: 2px solid var(--grn, #83c167);
+  outline-offset: 1px;
+}
+
+/* -- Top row controls wrapper (accent picker + environment bar together) -- */
+.rc-top-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 6px;
+}
+
+/* -- Accent color picker -- */
+.rc-accent-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-right: 1px solid #e5e7eb;
+  margin-right: 4px;
+}
+
+.rc-accent-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: content-box;
+  transition:
+    transform 0.12s,
+    border-color 0.12s,
+    box-shadow 0.12s;
+}
+
+.rc-accent-swatch:hover {
+  transform: scale(1.15);
+}
+
+/* Was entirely missing — these are real keyboard-focusable buttons with
+   no visible focus indicator at all before this. */
+.rc-accent-swatch:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--rc-accent);
+}
+
+.rc-accent-swatch.active {
+  border-color: #111827;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px #111827;
+}
+
+html[data-theme="dark"] .rc-accent-picker {
+  border-color: var(--line, #211f19);
+}
+
+html[data-theme="dark"] .rc-accent-swatch.active {
+  border-color: var(--fg, #d8d3c5);
+  box-shadow:
+    0 0 0 2px var(--bg, #0e0d0b),
+    0 0 0 3px var(--fg, #d8d3c5);
+}
+
+html[data-theme="dark"] .rc-accent-swatch:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--bg, #0e0d0b),
+    0 0 0 4px var(--rc-accent);
+}
+
+/* -- Saved requests grouped into folders -- */
+.rc-folder-group {
+  margin-bottom: 4px;
+}
+
+.rc-folder-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 7px 8px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-family: inherit;
+}
+
+.rc-folder-caret {
+  display: inline-block;
+  font-size: 0.6rem;
+  transition: transform 0.12s;
+  transform: rotate(90deg);
+}
+
+.rc-folder-caret.collapsed {
+  transform: rotate(0deg);
+}
+
+.rc-folder-name {
+  flex: 1;
+  text-align: left;
+}
+
+.rc-folder-count {
+  background: #e5e7eb;
+  color: #374151;
+  border-radius: 9999px;
+  font-size: 0.62rem;
+  padding: 1px 6px;
+  font-weight: 600;
+}
+
+html[data-theme="dark"] .rc-folder-count {
+  background: var(--line, #211f19);
+  color: var(--fg, #d8d3c5);
+}
+
+/* -- Response body content-type tag -- */
+.rc-response-kind-tag {
+  margin-left: auto;
+  font-size: 0.66rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  align-self: center;
+}

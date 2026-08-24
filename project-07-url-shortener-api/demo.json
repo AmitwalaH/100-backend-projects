@@ -1,0 +1,77 @@
+{
+  "baseUrl": "https://localhost:5000",
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/shorten",
+      "description": "Shorten a long URL. Optionally provide a custom alias.",
+      "requestBody": {
+        "url": "https://github.com/AmitwalaH/100-backend-projects",
+        "alias": "backend-100"
+      },
+      "responseStatus": 201,
+      "responseBody": {
+        "success": true,
+        "shortUrl": "http://localhost:5000/backend-100",
+        "originalUrl": "https://github.com/AmitwalaH/100-backend-projects",
+        "alias": "backend-100",
+        "clicks": 0,
+        "expiresAt": null,
+        "createdAt": "2026-06-20T10:32:00Z"
+      },
+      "responseTimeMs": 87
+    },
+    {
+      "method": "GET",
+      "path": "/api/urls",
+      "description": "List all shortened URLs with click counts.",
+      "requestBody": null,
+      "responseStatus": 200,
+      "responseBody": {
+        "success": true,
+        "count": 2,
+        "urls": [
+          {
+            "alias": "backend-100",
+            "originalUrl": "https://github.com/AmitwalaH/100-backend-projects",
+            "clicks": 14
+          },
+          {
+            "alias": "gh-profile",
+            "originalUrl": "https://github.com/AmitwalaH",
+            "clicks": 3
+          }
+        ]
+      },
+      "responseTimeMs": 52
+    },
+    {
+      "method": "GET",
+      "path": "/api/urls/:alias/stats",
+      "description": "Get click analytics for a specific short URL.",
+      "requestBody": null,
+      "responseStatus": 200,
+      "responseBody": {
+        "success": true,
+        "alias": "backend-100",
+        "originalUrl": "https://github.com/AmitwalaH/100-backend-projects",
+        "clicks": 14,
+        "createdAt": "2026-06-20T10:32:00Z",
+        "lastClickedAt": "2026-06-25T08:14:00Z"
+      },
+      "responseTimeMs": 44
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/urls/:alias",
+      "description": "Delete a short URL. Returns 404 if alias doesn't exist.",
+      "requestBody": null,
+      "responseStatus": 404,
+      "responseBody": {
+        "success": false,
+        "error": "Short URL with alias 'xyz' not found"
+      },
+      "responseTimeMs": 31
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "baseUrl": "https://localhost:5000",
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "description": "Register a new user account.",
+      "requestBody": {
+        "name": "Amit Wala",
+        "email": "amit@example.com",
+        "password": "secret123"
+      },
+      "responseStatus": 201,
+      "responseBody": {
+        "success": true,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWJjMTIzIn0.xyz",
+        "user": {
+          "_id": "66abc123",
+          "name": "Amit Wala",
+          "email": "amit@example.com"
+        }
+      },
+      "responseTimeMs": 118
+    },
+    {
+      "method": "POST",
+      "path": "/api/posts",
+      "description": "Create a new blog post (requires Bearer token).",
+      "requestBody": {
+        "title": "Getting Started with Node.js",
+        "content": "Node.js is a JavaScript runtime built on Chrome's V8 engine...",
+        "tags": ["node", "backend", "javascript"]
+      },
+      "responseStatus": 201,
+      "responseBody": {
+        "success": true,
+        "post": {
+          "_id": "66def456",
+          "title": "Getting Started with Node.js",
+          "slug": "getting-started-with-nodejs",
+          "author": "66abc123",
+          "tags": ["node", "backend", "javascript"],
+          "createdAt": "2026-06-20T10:32:00Z"
+        }
+      },
+      "responseTimeMs": 94
+    },
+    {
+      "method": "GET",
+      "path": "/api/posts",
+      "description": "Fetch all published posts with pagination.",
+      "requestBody": null,
+      "responseStatus": 200,
+      "responseBody": {
+        "success": true,
+        "count": 2,
+        "pagination": { "page": 1, "limit": 10, "total": 2 },
+        "posts": [
+          {
+            "_id": "66def456",
+            "title": "Getting Started with Node.js",
+            "slug": "getting-started-with-nodejs"
+          },
+          {
+            "_id": "66def789",
+            "title": "Understanding JWT Auth",
+            "slug": "understanding-jwt-auth"
+          }
+        ]
+      },
+      "responseTimeMs": 61
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/posts/:id",
+      "description": "Delete a post by ID — returns 404 if not found.",
+      "requestBody": null,
+      "responseStatus": 404,
+      "responseBody": {
+        "success": false,
+        "error": "Post not found"
+      },
+      "responseTimeMs": 38
+    }
+  ]
+}
