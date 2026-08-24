@@ -1,11 +1,28 @@
 import { SITE } from "../../constants";
 import { useGithubStats } from "../../hooks/useGithubStats";
 import projectsData from "../../../../../project-manifest.json";
+import ProjectGrid from "./ProjectGrid";
 
 const totalCategories = new Set(projectsData.map((p) => p.category)).size;
 const totalTechs = new Set(projectsData.flatMap((p) => p.tech)).size;
 
-export default function WelcomeScreen() {
+const numStyle = {
+  fontFamily: "var(--mono)",
+  fontSize: "1.75rem",
+  fontWeight: 700,
+  color: "var(--fg)",
+  lineHeight: 1,
+};
+const labelStyle = {
+  fontFamily: "var(--mono)",
+  fontSize: "0.65rem",
+  color: "var(--dim)",
+  textTransform: "uppercase",
+  letterSpacing: "0.07em",
+  marginTop: "8px",
+};
+
+export default function WelcomeScreen({ onSelectProject }) {
   const { stats } = useGithubStats(SITE.author, SITE.repoName);
 
   return (
@@ -20,38 +37,63 @@ export default function WelcomeScreen() {
       </div>
 
       <h1 className="welcome-title">
-        {SITE.totalProjects}{" "}
-        <span className="accent">Backend Projects</span>
-        <br />Built in Public
+        {SITE.totalProjects} <span className="accent">Backend Projects</span>
+        <br />
+        Built in Public
+        <span
+          className="terminal-cursor welcome-title-cursor"
+          aria-hidden="true"
+        />
       </h1>
 
       <p className="welcome-sub">{SITE.description}</p>
 
+      <div className="section-eyebrow">by_the_numbers</div>
       <div className="stat-bar">
         <div className="stat-cell">
-          <div className="stat-num">{SITE.totalProjects}</div>
-          <div className="stat-label">projects</div>
-        </div>
-        <div className="stat-cell">
-          <div className="stat-num">{totalCategories}</div>
-          <div className="stat-label">categories</div>
-        </div>
-        <div className="stat-cell">
-          <div className="stat-num">{totalTechs}</div>
-          <div className="stat-label">stacks</div>
-        </div>
-        {stats && (
-          <div className="stat-cell">
-            <div className="stat-num">{stats.stars}</div>
-            <div className="stat-label">stars</div>
+          <div className="stat-num" style={numStyle}>
+            {SITE.totalProjects}
           </div>
-        )}
+          <div className="stat-label" style={labelStyle}>
+            projects
+          </div>
+        </div>
+        <div className="stat-cell">
+          <div className="stat-num" style={numStyle}>
+            {totalCategories}
+          </div>
+          <div className="stat-label" style={labelStyle}>
+            categories
+          </div>
+        </div>
+        <div className="stat-cell">
+          <div className="stat-num" style={numStyle}>
+            {totalTechs}
+          </div>
+          <div className="stat-label" style={labelStyle}>
+            stacks
+          </div>
+        </div>
+        {/* Was conditionally rendered only once GitHub stats resolved —
+            the stat bar visibly grew/shifted after load. Always reserving
+            the cell (with a loading placeholder) avoids that layout shift. */}
+        <div className="stat-cell">
+          <div className="stat-num" style={numStyle}>
+            {stats ? stats.stars : "—"}
+          </div>
+          <div className="stat-label" style={labelStyle}>
+            stars
+          </div>
+        </div>
       </div>
 
       <p className="welcome-hint">
-        <span className="welcome-hint-arrow">←</span>
-        Select a project from the sidebar to explore it
+        Press <span className="welcome-hint-kbd">⌘K</span> to search, or browse
+        below
       </p>
+
+      <div className="section-eyebrow all-projects-eyebrow">all_projects</div>
+      <ProjectGrid projects={projectsData} onSelect={onSelectProject} />
     </div>
   );
 }

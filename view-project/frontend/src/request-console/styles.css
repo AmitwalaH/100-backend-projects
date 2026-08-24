@@ -24,6 +24,59 @@
   background: #f8fafc;
   display: flex;
   flex-direction: column;
+  transition:
+    width 0.15s ease,
+    opacity 0.1s ease;
+  overflow: hidden;
+}
+
+/* Collapsing to width: 0 rather than unmounting keeps scroll position
+   and open folders intact for when it's expanded again. */
+.request-console.sidebar-collapsed .rc-collection-sidebar {
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+  border-right: none;
+  pointer-events: none;
+}
+
+.rc-sidebar-toggle {
+  flex-shrink: 0;
+  width: 16px;
+  border: none;
+  border-right: 1px solid #e5e7eb;
+  background: #f8fafc;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.12s,
+    background 0.12s;
+}
+
+.rc-sidebar-toggle:hover {
+  color: #111827;
+  background: #eef2f7;
+}
+
+.rc-sidebar-toggle:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--rc-accent);
+}
+
+html[data-theme="dark"] .rc-sidebar-toggle {
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
+  color: var(--dim, #8b8270);
+}
+
+html[data-theme="dark"] .rc-sidebar-toggle:hover {
+  color: var(--fg, #d8d3c5);
+  background: var(--panel-hover, #1d1a14);
 }
 
 .rc-collection-tabs {
@@ -180,6 +233,13 @@
   background: #fff;
   color: #111827;
   box-shadow: inset 0 -2px 0 var(--rc-accent);
+}
+
+/* .rc-tab is now keyboard-focusable (roving tabindex) — needs its own
+   visible focus state since a plain div gets no reliable default one. */
+.rc-tab:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--rc-accent);
 }
 
 .rc-tab-method {
@@ -408,14 +468,14 @@
 .rc-command-block {
   position: relative;
   margin-top: 8px;
-  background: #0f172a;
+  background: var(--bg, #0e0d0b);
   border-radius: 8px;
   padding: 12px 14px;
 }
 
 .rc-command-block pre {
   margin: 0;
-  color: #e2e8f0;
+  color: var(--fg, #d8d3c5);
   font-family: "JetBrains Mono", monospace;
   font-size: 0.76rem;
   white-space: pre-wrap;
@@ -427,12 +487,27 @@
   top: 8px;
   right: 10px;
   border: none;
-  background: rgba(255, 255, 255, 0.12);
-  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--fg, #d8d3c5);
   font-size: 0.68rem;
   padding: 4px 8px;
   border-radius: 5px;
   cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+/* copyCommand() previously swallowed success and failure identically —
+   silence either way. Now it reports which one actually happened. */
+.rc-command-copy.copied {
+  background: rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
+.rc-command-copy.failed {
+  background: rgba(220, 38, 38, 0.35);
+  color: #fecaca;
 }
 
 /* -- Split pane ---------------------------------------------------- */
@@ -460,6 +535,15 @@
   background: #fafafa;
   border-top: 1px solid #f1f5f9;
   border-bottom: 1px solid #f1f5f9;
+}
+
+/* Divider is now keyboard-operable (arrow keys / Home / End) via
+   tabIndex={0} — needs a visible focus state since it's a div, not a
+   native control. */
+.split-pane-divider:focus-visible {
+  outline: none;
+  background: #f1f5f9;
+  box-shadow: inset 0 0 0 2px var(--rc-accent);
 }
 
 .split-pane-grip {
@@ -721,11 +805,14 @@
 .rc-status-chip {
   font-weight: 700;
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
+  padding: 3px 10px;
+  border-radius: 6px;
 }
 
 .rc-status-chip-error {
   color: #dc2626;
+  background: rgba(220, 38, 38, 0.14);
 }
 
 .rc-response-meta {
@@ -755,6 +842,45 @@
   font-size: 0.85rem;
 }
 
+/* Was borrowed by coincidence from the outer app's index.css, which
+   defines these only for ProjectApiRunner.jsx (now dead code, safe to
+   delete). ResponsePanel is very much alive and uses these same class
+   names for its loading state, so they need to live here — this file's
+   own comment says it's meant to be self-contained, so making that true. */
+.run-loading {
+  display: flex;
+  gap: 6px;
+  padding: 18px 0;
+  justify-content: center;
+}
+.run-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d1d5db;
+  animation: rc-run-pulse 1s ease-in-out infinite;
+}
+.run-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.run-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes rc-run-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+html[data-theme="dark"] .run-dot {
+  background: var(--faint, #3a352b);
+}
+
 .rc-response-body-toggle {
   display: flex;
   gap: 4px;
@@ -779,8 +905,8 @@
 
 .rc-response-body {
   margin: 0;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: var(--bg, #0e0d0b);
+  color: var(--fg, #d8d3c5);
   border-radius: 10px;
   padding: 18px;
   font-family: "JetBrains Mono", monospace;
@@ -845,6 +971,9 @@
 }
 
 .rc-console-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   width: 100%;
   text-align: left;
   border: none;
@@ -855,6 +984,32 @@
   color: #374151;
   cursor: pointer;
   font-family: inherit;
+  transition: color 0.12s;
+}
+
+/* Was a dead class before — .rc-console-log's "open" modifier had no
+   rule targeting it at all. Now it actually does something: highlights
+   the toggle label so the open/closed state reads at a glance, not just
+   from whether the panel below happens to be present. */
+.rc-console-log.open .rc-console-toggle {
+  color: #111827;
+}
+
+html[data-theme="dark"] .rc-console-log.open .rc-console-toggle {
+  color: var(--fg, #d8d3c5);
+}
+
+/* Single rotating caret instead of swapping the glyph character (▾/▸) —
+   matches the same pattern already used for .rc-folder-caret below, so
+   the two expand/collapse affordances in this app read the same way. */
+.rc-console-caret {
+  display: inline-block;
+  font-size: 0.6rem;
+  transition: transform 0.12s;
+}
+
+.rc-console-toggle.open .rc-console-caret {
+  transform: rotate(90deg);
 }
 
 .rc-console-count {
@@ -921,24 +1076,29 @@
 
 .rc-console-detail {
   margin: 0 0 8px;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: var(--bg, #0e0d0b);
+  color: var(--fg, #d8d3c5);
   border-radius: 6px;
   padding: 10px;
   font-size: 0.72rem;
   overflow-x: auto;
 }
 
-/* -- Dark theme ---------------------------------------------------- */
+/* -- Dark theme -------------------------------------------------------
+   Was its own disconnected slate-blue palette (#0f172a / #1e293b /
+   #334155 / #e2e8f0) with no relation to the app's actual terminal
+   tokens (--bg / --panel / --fg / --grn etc, defined in index.css) —
+   that mismatch is the "blue" that didn't belong here at all.
+------------------------------------------------------------------- */
 html[data-theme="dark"] .request-console {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: var(--panel, #161410);
+  border-color: var(--line, #211f19);
 }
 html[data-theme="dark"] .rc-collection-sidebar,
 html[data-theme="dark"] .rc-top-row,
 html[data-theme="dark"] .rc-console-toggle {
-  background: #0d1223;
-  border-color: #1e293b;
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
 }
 html[data-theme="dark"] .rc-tab,
 html[data-theme="dark"] .rc-panel-tab-strip,
@@ -947,11 +1107,11 @@ html[data-theme="dark"] .rc-response-summary,
 html[data-theme="dark"] .kv-table td,
 html[data-theme="dark"] .rc-console-log,
 html[data-theme="dark"] .rc-console-body {
-  border-color: #1e293b;
+  border-color: var(--line, #211f19);
 }
 html[data-theme="dark"] .rc-tab.active {
-  background: #151f36;
-  color: #e2e8f0;
+  background: var(--panel-hover, #1d1a14);
+  color: var(--fg, #d8d3c5);
 }
 html[data-theme="dark"] .rc-url-bar,
 html[data-theme="dark"] .rc-environment-select,
@@ -964,29 +1124,43 @@ html[data-theme="dark"] .rc-scripts-textarea,
 html[data-theme="dark"] .rc-download-btn,
 html[data-theme="dark"] .rc-response-body-toggle button,
 html[data-theme="dark"] .rc-environment-popover {
-  background: #0f172a;
-  border-color: #334155;
-  color: #e2e8f0;
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
+  color: var(--fg, #d8d3c5);
 }
 html[data-theme="dark"] .rc-method-select {
-  background: #111827;
-  border-color: #334155;
+  background: var(--bg, #0e0d0b);
+  border-color: var(--line, #211f19);
 }
 html[data-theme="dark"] .rc-url-input {
   background: transparent;
-  color: #e2e8f0;
+  color: var(--fg, #d8d3c5);
 }
 html[data-theme="dark"] .kv-input:focus {
-  background: #111827;
+  background: var(--panel-hover, #1d1a14);
 }
 html[data-theme="dark"] .rc-collection-item:hover {
-  background: #151f36;
+  background: var(--panel-hover, #1d1a14);
 }
 html[data-theme="dark"] .rc-tab-new:hover {
-  color: #e2e8f0;
+  color: var(--fg, #d8d3c5);
 }
 html[data-theme="dark"] .rc-command-toggle:hover {
-  color: #e2e8f0;
+  color: var(--fg, #d8d3c5);
+}
+
+/* This was the actual checkbox in your screenshot — native checkboxes
+   render the browser's default blue accent-color unless told otherwise.
+   Scoped to .request-console only. */
+html[data-theme="dark"] .request-console input[type="checkbox"] {
+  accent-color: var(--grn, #83c167);
+}
+html[data-theme="dark"] .rc-select:focus-visible,
+html[data-theme="dark"] .rc-environment-select:focus-visible,
+html[data-theme="dark"] .rc-method-select:focus-visible,
+html[data-theme="dark"] .rc-text-input:focus-visible {
+  outline: 2px solid var(--grn, #83c167);
+  outline-offset: 1px;
 }
 
 /* -- Top row controls wrapper (accent picker + environment bar together) -- */
@@ -1015,18 +1189,47 @@ html[data-theme="dark"] .rc-command-toggle:hover {
   cursor: pointer;
   padding: 0;
   box-sizing: content-box;
+  transition:
+    transform 0.12s,
+    border-color 0.12s,
+    box-shadow 0.12s;
+}
+
+.rc-accent-swatch:hover {
+  transform: scale(1.15);
+}
+
+/* Was entirely missing — these are real keyboard-focusable buttons with
+   no visible focus indicator at all before this. */
+.rc-accent-swatch:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--rc-accent);
 }
 
 .rc-accent-swatch.active {
   border-color: #111827;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px #111827;
 }
 
 html[data-theme="dark"] .rc-accent-picker {
-  border-color: #1e293b;
+  border-color: var(--line, #211f19);
 }
 
 html[data-theme="dark"] .rc-accent-swatch.active {
-  border-color: #e2e8f0;
+  border-color: var(--fg, #d8d3c5);
+  box-shadow:
+    0 0 0 2px var(--bg, #0e0d0b),
+    0 0 0 3px var(--fg, #d8d3c5);
+}
+
+html[data-theme="dark"] .rc-accent-swatch:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--bg, #0e0d0b),
+    0 0 0 4px var(--rc-accent);
 }
 
 /* -- Saved requests grouped into folders -- */
@@ -1077,8 +1280,8 @@ html[data-theme="dark"] .rc-accent-swatch.active {
 }
 
 html[data-theme="dark"] .rc-folder-count {
-  background: #1e293b;
-  color: #cbd5e1;
+  background: var(--line, #211f19);
+  color: var(--fg, #d8d3c5);
 }
 
 /* -- Response body content-type tag -- */

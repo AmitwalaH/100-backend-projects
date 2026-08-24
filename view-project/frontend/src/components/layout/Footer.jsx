@@ -4,12 +4,17 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div className="footer-left">
-          Built by{" "}
+        <div className="footer-prompt">
+          <span className="dim">~/{SITE.author.toLowerCase()}</span>
+          <span className="dim"> ❯ </span>
           <a href={SITE.repoUrl} target="_blank" rel="noopener noreferrer">
             {SITE.author}
-          </a>{" "}
-          · {SITE.totalProjects} real-world backend projects · Open Source
+          </a>
+          <span className="footer-prompt-text">
+            {" "}
+            · {SITE.totalProjects} real-world backend projects · Open Source
+          </span>
+          <span className="terminal-cursor footer-cursor" aria-hidden="true" />
         </div>
         <div className="footer-right">
           <a href={SITE.repoUrl} target="_blank" rel="noopener noreferrer">

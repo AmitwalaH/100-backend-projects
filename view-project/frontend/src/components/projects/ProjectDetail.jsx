@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { DIFFICULTY_CONFIG } from "../../constants";
+import { SITE, DIFFICULTY_CONFIG } from "../../constants";
 import { hasLiveDemo, formatProjectNumber } from "../../utils/projects";
 import { useProjectPageConfig } from "../../hooks/useProjectPageConfig";
 
@@ -62,7 +61,6 @@ export default function ProjectDetail({
   nextProject,
   onNavigate,
 }) {
-  const navigate = useNavigate();
   const diffConfig =
     DIFFICULTY_CONFIG[project.difficulty] ?? DIFFICULTY_CONFIG.Beginner;
   const projectPageConfig = useProjectPageConfig(project);
@@ -78,7 +76,7 @@ export default function ProjectDetail({
   return (
     <div className="detail">
       <div className="detail-breadcrumb">
-        <span className="detail-bc-author">AmitwalaH</span>
+        <span className="detail-bc-author">{SITE.author}</span>
         <span className="detail-bc-sep"> / </span>
         <span className="detail-bc-repo">{slug}</span>
       </div>
@@ -180,7 +178,7 @@ export default function ProjectDetail({
         )}
       </div>
 
-      <div className="detail-watermark">⌨ backend-projects · AmitwalaH</div>
+      <div className="detail-watermark">⌨ backend-projects · {SITE.author}</div>
     </div>
   );
 }

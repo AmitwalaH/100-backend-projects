@@ -87,8 +87,16 @@ export function useEnvironments() {
         if (e.id !== id) return e;
         const byKey = new Map(e.variables.map((v) => [v.key, v]));
         for (const { key, value } of assignments) {
-          if (byKey.has(key)) {
-            byKey.get(key).value = value;
+          const existing = byKey.get(key);
+          // Was `byKey.get(key).value = value` — mutating the existing
+          // variable object in place, even though it's still referenced
+          // by the PREVIOUS state's `e.variables` array. That violates
+          // React's immutability contract: the old state object ends up
+          // silently reflecting the new value too, which can confuse
+          // reference-equality checks (memoization) and DevTools state
+          // history. Building a new object instead.
+          if (existing) {
+            byKey.set(key, { ...existing, value });
           } else {
             byKey.set(key, { id: createId("var"), key, value, enabled: true });
           }

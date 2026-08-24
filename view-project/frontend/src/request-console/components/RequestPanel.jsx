@@ -20,7 +20,8 @@ export default function RequestPanel({ tab, onChange }) {
   const [activeTabId, setActiveTabId] = useState("params");
   const ActiveEditor = EDITORS[activeTabId];
 
-  const enabledCount = (rows) => (rows || []).filter((r) => r.enabled !== false && r.key).length;
+  const enabledCount = (rows) =>
+    (rows || []).filter((r) => r.enabled !== false && r.key).length;
 
   return (
     <div className="rc-request-panel">
@@ -33,8 +34,16 @@ export default function RequestPanel({ tab, onChange }) {
             onClick={() => setActiveTabId(t.id)}
           >
             {t.label}
-            {t.id === "params" && enabledCount(tab.params) > 0 && <span className="rc-panel-tab-count">{enabledCount(tab.params)}</span>}
-            {t.id === "headers" && enabledCount(tab.headers) > 0 && <span className="rc-panel-tab-count">{enabledCount(tab.headers)}</span>}
+            {t.id === "params" && enabledCount(tab.params) > 0 && (
+              <span className="rc-panel-tab-count">
+                {enabledCount(tab.params)}
+              </span>
+            )}
+            {t.id === "headers" && enabledCount(tab.headers) > 0 && (
+              <span className="rc-panel-tab-count">
+                {enabledCount(tab.headers)}
+              </span>
+            )}
           </button>
         ))}
       </div>

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap");
 
 @font-face {
   font-family: "xkcd";
@@ -13,6 +13,32 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #0e0d0b;
+  --panel: #161410;
+  --panel-hover: #1d1a14;
+  --fg: #d8d3c5;
+  --dim: #8b8270;
+  --faint: #3a352b;
+  --grn: #83c167;
+  --grn-hover: #6fa652;
+  --red: #e0705f;
+  --amber: #d8a657;
+  --orange: #e08a4a;
+  --line: #211f19;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Figtree was imported at the top of this file but never actually
+     used anywhere — every rule used --mono, including long paragraph
+     copy (welcome-sub, detail-tagline), which reads worse in monospace
+     at length than a proper body font. Using it for body copy while
+     keeping mono for headings/labels/UI chrome. */
+  --sans: "Figtree", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+
 *,
 *::before,
 *::after {
@@ -20,9 +46,9 @@
 }
 
 body {
-  background: #f5f5f5;
-  color: #363636;
-  font-family: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -44,82 +70,122 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: var(--line);
   border-radius: 9999px;
 }
 
-/* -- Navbar --------------------------------------------------------- */
+/* -- Navbar (terminal titlebar) --------------------------------------- */
 .navbar {
   flex-shrink: 0;
-  background: #363636;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
   z-index: 50;
 }
 .navbar-inner {
-  height: 56px;
-  padding: 0 28px;
+  height: 52px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  font-family: var(--mono);
+}
+.navbar-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+.navbar-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.navbar-dot-red {
+  background: var(--red);
+}
+.navbar-dot-amber {
+  background: var(--amber);
+}
+.navbar-dot-green {
+  background: var(--grn);
 }
 .navbar-logo {
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #fff;
+  color: var(--fg);
 }
 .navbar-logo-icon {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .navbar-logo-icon svg {
-  width: 20px;
-  height: 20px;
-  color: #4ade80;
+  width: 18px;
+  height: 18px;
+  color: var(--grn);
 }
 .navbar-logo-text {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  font-family: var(--mono);
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: #fff;
+  color: var(--fg);
+}
+.navbar-path-dim {
+  color: var(--dim);
+}
+.navbar-path-sep {
+  color: var(--faint);
+}
+.navbar-path-file {
+  color: var(--fg);
+  font-weight: 600;
 }
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
 }
 .navbar-links a {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.82rem;
+  color: var(--dim);
   text-decoration: none;
   transition: color 0.15s;
 }
 .navbar-links a:hover {
-  color: #fff;
+  color: var(--fg);
 }
 .navbar-github-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff !important;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  font-size: 0.82rem;
+  padding: 6px 13px;
+  background: transparent;
+  color: var(--fg) !important;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  font-size: 0.8rem;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.15s;
+  transition: all 0.15s;
 }
 .navbar-github-btn:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: #fff !important;
+  border-color: var(--grn);
+  color: var(--grn) !important;
 }
 
-/* -- Shell ------------------------------------------------------------ */
+/* -- Shell -------------------------------------------------------------
+   Sidebar has been removed as a structural element (replaced by the
+   Command Palette). .main is now the sole flex child and fills the
+   full width on its own — no layout change needed here.
+------------------------------------------------------------------- */
 .shell {
   display: flex;
   flex: 1;
@@ -127,300 +193,283 @@ body {
   min-height: 0;
 }
 
-/* -- Sidebar ------------------------------------------------------- */
-.sidebar {
-  width: 260px;
-  flex-shrink: 0;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.sidebar-header {
-  padding: 16px 18px 12px;
-  border-bottom: 1px solid #f0f0f0;
-  flex-shrink: 0;
-}
-.sidebar-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.sidebar-title {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: #a3a39c;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-}
-
-.sidebar-filter-wrap {
-  position: relative;
-}
-.sidebar-filter-icon-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border: 1px solid #e5e7eb;
-  border-radius: 7px;
-  background: #fff;
-  color: #888;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.15s;
-  font-family: inherit;
-}
-.sidebar-filter-icon-btn:hover {
-  border-color: #363636;
-  color: #363636;
-}
-.sidebar-filter-icon-btn.has-filter {
-  border-color: #363636;
-  background: #363636;
-  color: #fff;
-}
-.filter-dot {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 7px;
-  height: 7px;
-  background: #ef4444;
-  border-radius: 9999px;
-  border: 1.5px solid #fff;
-}
-.sidebar-filter-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 200;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.12);
-  padding: 6px;
-  min-width: 170px;
-}
-.sfd-label {
-  font-size: 0.62rem;
-  font-weight: 600;
-  color: #bbb;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 4px 8px 6px;
-}
-.sfd-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 8px 10px;
-  border: none;
-  background: none;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  color: #555;
-  cursor: pointer;
-  font-family: "Figtree", inherit;
-  transition: background 0.12s;
-  text-align: left;
-}
-.sfd-item:hover {
-  background: #f5f5f5;
-  color: #363636;
-}
-.sfd-item.active {
-  background: #f0f0f0;
-  color: #363636;
-  font-weight: 600;
-}
-
-.sidebar-active-filter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 18px;
-  background: #363636;
-  font-size: 0.75rem;
-  color: #fff;
-  font-weight: 500;
-}
-.sidebar-active-filter button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 0;
-  transition: color 0.12s;
-}
-.sidebar-active-filter button:hover {
-  color: #fff;
-}
-
-.sidebar-search {
-  position: relative;
-}
-.sidebar-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 14px;
-  height: 14px;
-  color: #bbb;
-  pointer-events: none;
-}
-.sidebar-search-input {
-  width: 100%;
-  background: #f5f5f5;
-  border: 1px solid #e5e7eb;
-  border-radius: 7px;
-  padding: 8px 10px 8px 30px;
-  font-size: 0.82rem;
-  color: #363636;
-  outline: none;
-  font-family: "Figtree", inherit;
-  transition: border-color 0.15s;
-}
-.sidebar-search-input::placeholder {
-  color: #bbb;
-}
-.sidebar-search-input:focus {
-  border-color: #363636;
-}
-
-.sidebar-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 4px 0;
-}
-.sidebar-empty {
-  padding: 20px 18px;
-  font-size: 0.82rem;
-  color: #bbb;
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 18px;
-  cursor: pointer;
-  border-left: 2px solid transparent;
-  transition:
-    background 0.12s,
-    border-color 0.12s;
-  user-select: none;
-  position: relative;
-}
-.sidebar-item:hover {
-  background: #f5f5f5;
-}
-.sidebar-item.active {
-  background: #f0f0f0;
-  border-left-color: #363636;
-}
-
-.sidebar-item-num {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.68rem;
-  color: #ccc;
-  flex-shrink: 0;
-  width: 22px;
-  text-align: right;
-}
-.sidebar-item.active .sidebar-item-num {
-  color: #888;
-}
-.sidebar-item-name {
-  font-size: 0.85rem;
-  color: #555;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-}
-.sidebar-item.active .sidebar-item-name {
-  color: #1c1c1c;
-  font-weight: 600;
-}
-.sidebar-count {
-  padding: 10px 18px;
-  font-size: 0.72rem;
-  color: #bbb;
-  border-top: 1px solid #f0f0f0;
-  flex-shrink: 0;
-}
-
-/* -- Hover Tooltip --------------------------------------------------- */
-.sidebar-tooltip {
-  position: fixed;
-  left: 268px;
-  transform: translateY(-50%);
-  z-index: 300;
-  background: #1c1c1c;
-  color: #e4e4e7;
-  border-radius: 10px;
-  padding: 12px 14px;
-  min-width: 210px;
-  max-width: 270px;
-  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
-  pointer-events: none;
-}
-.sidebar-tooltip::before {
-  content: "";
-  position: absolute;
-  left: -5px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 5px solid #1c1c1c;
-}
-.stt-category {
-  display: block;
-  font-size: 0.62rem;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 3px;
-}
-.stt-title {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: 8px;
-  line-height: 1.3;
-}
-.stt-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.stt-tag {
-  padding: 2px 7px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  font-size: 0.7rem;
-  color: #a1a1aa;
-}
-
 /* -- Main ------------------------------------------------------------ */
 .main {
   flex: 1;
   overflow-y: auto;
   min-width: 0;
-  background: #f5f5f5;
+  background: var(--bg);
+}
+
+/* -- Command Palette --------------------------------------------------
+   Replaces the old sidebar (browse list + search + category filter +
+   hover tooltip) with a single ⌘K-driven overlay. Self-contained：
+   mounts its own floating trigger, so it can be dropped in anywhere
+   without any layout wiring.
+------------------------------------------------------------------- */
+.cmdk-trigger {
+  /* Fixed under the navbar rather than the bottom-left corner — pinning
+     it to the bottom collided with the footer, which is real content
+     (GitHub/README links + attribution), not a rendering artifact. */
+  position: fixed;
+  top: 66px;
+  right: 20px;
+  bottom: auto;
+  left: auto;
+  z-index: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.cmdk-trigger:hover {
+  border-color: var(--grn);
+  color: var(--fg);
+}
+.cmdk-trigger-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--dim);
+  flex-shrink: 0;
+}
+.cmdk-trigger:hover .cmdk-trigger-icon {
+  color: var(--grn);
+}
+.cmdk-trigger-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 0.68rem;
+  color: var(--faint);
+  background: var(--bg);
+}
+
+.cmdk-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(14, 13, 11, 0.72);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh 20px 20px;
+}
+
+.cmdk-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.6);
+  font-family: var(--mono);
+}
+
+.cmdk-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.cmdk-input-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--dim);
+  flex-shrink: 0;
+}
+.cmdk-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 0.92rem;
+}
+.cmdk-input::placeholder {
+  color: var(--faint);
+}
+.cmdk-input-esc {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  color: var(--faint);
+}
+
+.cmdk-categories {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.cmdk-categories-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+.cmdk-categories-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cmdk-category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--dim);
+  cursor: pointer;
+  font-family: var(--mono);
+  transition: all 0.12s;
+}
+.cmdk-category-chip:hover {
+  border-color: var(--grn);
+  color: var(--fg);
+}
+.cmdk-category-chip.active {
+  border-color: var(--grn);
+  color: var(--fg);
+  background: var(--panel-hover);
+}
+.cmdk-category-chip-count {
+  font-size: 0.65rem;
+  color: var(--faint);
+}
+
+.cmdk-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+}
+.cmdk-empty {
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--faint);
+}
+.cmdk-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.cmdk-item.active {
+  background: var(--panel-hover);
+}
+.cmdk-item-num {
+  font-size: 0.68rem;
+  color: var(--faint);
+  flex-shrink: 0;
+  width: 22px;
+  text-align: right;
+}
+.cmdk-item.active .cmdk-item-num {
+  color: var(--dim);
+}
+.cmdk-item-main {
+  flex: 1;
+  min-width: 0;
+}
+.cmdk-item-name {
+  font-size: 0.85rem;
+  color: var(--fg);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmdk-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  overflow: hidden;
+}
+.cmdk-item-category {
+  font-size: 0.68rem;
+  color: var(--grn);
+  flex-shrink: 0;
+}
+.cmdk-item-tech {
+  font-size: 0.68rem;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmdk-item-enter {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  color: var(--faint);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.cmdk-item.active .cmdk-item-enter {
+  opacity: 1;
+}
+
+.cmdk-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.68rem;
+  color: var(--faint);
+  flex-shrink: 0;
+}
+.cmdk-footer-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.cmdk-footer kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+}
+
+/* -- Section eyebrow labels (ponytail-style snake_case section tags) -- */
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--dim);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  margin-bottom: 10px;
 }
 
 /* -- Welcome ----------------------------------------------------------- */
@@ -428,40 +477,78 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
+  /* Was justify-content: center, fine when this was a short page. Now
+     that a 51-card grid always renders below, centering the whole
+     column vertically would push the title/prompt above the fold on
+     load instead of starting at the top like a normal page. */
+  justify-content: flex-start;
+  min-height: 100%;
   text-align: center;
   padding: 40px 32px;
+}
+.terminal-window {
+  display: inline-flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 36px;
+  max-width: 100%;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 16px 36px -14px rgba(0, 0, 0, 0.45);
+}
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  background: var(--panel-hover);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.terminal-dot-red {
+  background: var(--red);
+}
+.terminal-dot-yellow {
+  background: var(--amber);
+}
+.terminal-dot-green {
+  background: var(--grn);
 }
 .terminal-prompt {
   display: inline-flex;
   align-items: center;
-  background: #1c1c1c;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-family: "JetBrains Mono", monospace;
+  padding: 12px 18px;
+  font-family: var(--mono);
   font-size: 0.82rem;
-  color: #c9c9c9;
-  margin-bottom: 36px;
+  color: var(--fg);
   white-space: nowrap;
   overflow-x: auto;
   max-width: 100%;
 }
 .terminal-prompt .dim {
-  color: #6b6b6b;
+  color: var(--dim);
 }
 .terminal-prompt .path {
-  color: #8fd3ff;
+  color: var(--grn);
 }
 .terminal-prompt .cmd {
-  color: #fff;
+  color: var(--fg);
   margin-left: 8px;
 }
 .terminal-cursor {
   display: inline-block;
   width: 8px;
   height: 16px;
-  background: #4ade80;
+  background: var(--grn);
   margin-left: 8px;
   vertical-align: -3px;
   animation: blink 1.1s step-end infinite;
@@ -482,15 +569,20 @@ body {
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.14;
-  color: #363636;
+  color: var(--fg);
   margin-bottom: 14px;
 }
 .welcome-title .accent {
-  color: #1ba35e;
+  color: var(--grn);
+}
+.welcome-title-cursor {
+  margin-left: 10px;
+  vertical-align: -2px;
 }
 .welcome-sub {
+  font-family: var(--sans);
   font-size: 0.98rem;
-  color: #888;
+  color: var(--dim);
   max-width: 420px;
   line-height: 1.6;
   margin-bottom: 40px;
@@ -499,44 +591,163 @@ body {
 .stat-bar {
   display: inline-flex;
   align-items: stretch;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow:
-    0 1px 2px rgba(28, 28, 28, 0.04),
-    0 8px 24px -8px rgba(28, 28, 28, 0.08);
+  box-shadow: 0 14px 32px -12px rgba(0, 0, 0, 0.4);
 }
 .stat-cell {
-  padding: 18px 32px;
-  text-align: left;
-  border-right: 1px solid #ebe9e4;
+  padding: 20px 36px;
+  text-align: center;
+  border-right: 1px solid var(--line);
+  transition: background 0.15s;
+}
+.stat-cell:hover {
+  background: var(--panel-hover);
 }
 .stat-cell:last-child {
   border-right: none;
 }
 .stat-num {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #363636;
+  font-family: var(--mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--fg);
   line-height: 1;
 }
 .stat-label {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.65rem;
-  color: #a3a39c;
+  color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 .welcome-hint {
   margin-top: 32px;
   font-size: 0.78rem;
-  color: #bbb;
+  color: var(--faint);
   display: flex;
   align-items: center;
   gap: 6px;
+}
+.welcome-hint-kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--dim);
+  background: var(--panel);
+}
+
+/* -- Project grid (homepage browse view) -------------------------------
+   Was previously the site's biggest UX gap: a portfolio for 51 projects
+   that showed zero of them by default, only a search trigger. This is
+   now the actual browse path, with search/⌘K as the supplementary
+   shortcut it's meant to be rather than the only way in.
+------------------------------------------------------------------- */
+.all-projects-eyebrow {
+  margin-top: 56px;
+  text-align: center;
+}
+
+.project-grid {
+  width: 100%;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  text-align: left;
+  padding-bottom: 24px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  cursor: pointer;
+  font-family: var(--mono);
+  text-align: left;
+  color: inherit;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.12s;
+}
+
+.project-card:hover {
+  border-color: var(--grn);
+  background: var(--panel-hover);
+  transform: translateY(-2px);
+}
+
+.project-card:focus-visible {
+  outline: none;
+  border-color: var(--grn);
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--grn);
+}
+
+.project-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.project-card-num {
+  font-size: 0.7rem;
+  color: var(--faint);
+}
+
+.project-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.project-card-desc {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--dim);
+  line-height: 1.55;
+  margin: 0 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-card-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-card-tech-more {
+  color: var(--faint);
+}
+
+@media (max-width: 768px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* -- Detail ------------------------------------------------------------ */
@@ -552,24 +763,24 @@ body {
   margin-bottom: 20px;
 }
 .detail-bc-author {
-  font-family: "xkcd", cursive;
-  font-size: 1.3rem;
+  font-family: var(--mono);
+  font-size: 1.1rem;
   font-weight: 400;
-  color: #a3a39c;
+  color: var(--dim);
 }
 .detail-bc-sep {
-  font-family: "xkcd", cursive;
-  font-size: 1.5rem;
+  font-family: var(--mono);
+  font-size: 1.1rem;
   font-weight: 400;
-  color: #c8c8c4;
+  color: var(--faint);
   margin: 0 3px;
 }
 .detail-bc-repo {
-  font-family: "xkcd", cursive;
-  font-size: 1.8rem;
+  font-family: var(--mono);
+  font-size: 1.4rem;
   font-weight: 700;
-  color: #000;
-  letter-spacing: 0;
+  color: var(--fg);
+  letter-spacing: -0.01em;
 }
 
 .detail-meta-row {
@@ -580,9 +791,9 @@ body {
   flex-wrap: wrap;
 }
 .detail-num {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.75rem;
-  color: #bbb;
+  color: var(--faint);
 }
 .detail-difficulty {
   display: inline-flex;
@@ -593,37 +804,38 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  border: 1px solid transparent;
 }
 .diff-beginner {
-  background: #f0fdf4;
-  color: #16a34a;
-  border: 1px solid #bbf7d0;
+  background: rgba(131, 193, 103, 0.12);
+  border-color: rgba(131, 193, 103, 0.35);
+  color: var(--grn);
 }
 .diff-intermediate {
-  background: #fffbeb;
-  color: #d97706;
-  border: 1px solid #fde68a;
+  background: rgba(216, 166, 87, 0.12);
+  border-color: rgba(216, 166, 87, 0.35);
+  color: var(--amber);
 }
 .diff-advanced {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background: rgba(224, 112, 95, 0.12);
+  border-color: rgba(224, 112, 95, 0.35);
+  color: var(--red);
 }
 .detail-category-pill {
   padding: 4px 12px;
-  background: #f5f5f5;
-  border: 1px solid #e5e7eb;
+  background: var(--line);
+  border: 1px solid var(--line);
   border-radius: 9999px;
   font-size: 0.72rem;
   font-weight: 500;
-  color: #888;
+  color: var(--dim);
 }
 
 .detail-tagline {
-  font-family: "xkcd", cursive;
-  font-size: 1.05rem;
+  font-family: var(--sans);
+  font-size: 0.98rem;
   font-weight: 400;
-  color: #444;
+  color: var(--fg);
   line-height: 1.7;
   margin-bottom: 20px;
   letter-spacing: 0;
@@ -640,14 +852,14 @@ body {
   display: inline-flex;
   align-items: center;
   font-size: 0.88rem;
-  color: #555;
+  color: var(--fg);
   gap: 6px;
 }
 .detail-tech-dot {
   display: inline-block;
   width: 9px;
   height: 9px;
-  background: #4ade80;
+  background: var(--grn);
   border-radius: 9999px;
   flex-shrink: 0;
 }
@@ -655,13 +867,13 @@ body {
   display: inline-block;
   width: 1px;
   height: 13px;
-  background: #e5e7eb;
+  background: var(--line);
   margin: 0 12px;
 }
 
 .detail-divider {
   border: none;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--line);
   margin: 32px 0;
 }
 
@@ -675,34 +887,33 @@ body {
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #363636;
-  color: #fff;
-  border-radius: 8px;
+  background: var(--grn);
+  color: var(--bg);
+  border-radius: 6px;
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: background 0.15s;
   border: none;
   cursor: pointer;
-  font-family: "Figtree", inherit;
+  font-family: var(--mono);
 }
 .btn-demo:hover {
-  background: #1a1a1a;
-  color: #fff;
+  background: var(--grn-hover);
+  color: var(--bg);
 }
 .btn-demo-disabled {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #363636;
-  color: #fff;
-  border-radius: 8px;
+  background: var(--line);
+  color: var(--dim);
+  border-radius: 6px;
   font-size: 0.88rem;
   font-weight: 600;
   border: none;
-  font-family: "Figtree", inherit;
-  opacity: 0.35;
+  font-family: var(--mono);
   cursor: not-allowed;
   pointer-events: none;
 }
@@ -711,26 +922,26 @@ body {
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #fff;
-  color: #363636;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.15s;
   cursor: pointer;
-  font-family: "Figtree", inherit;
+  font-family: var(--mono);
 }
 .btn-code:hover {
-  background: #f5f5f5;
-  border-color: #363636;
+  background: var(--panel-hover);
+  border-color: var(--faint);
 }
 
 .detail-section-label {
   font-size: 0.7rem;
   font-weight: 600;
-  color: #a3a39c;
+  color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 12px;
@@ -743,12 +954,12 @@ body {
 .tech-tag {
   display: inline-block;
   padding: 5px 13px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 6px;
   font-size: 0.78rem;
   font-weight: 500;
-  color: #555;
+  color: var(--fg);
 }
 
 .detail-nav {
@@ -756,29 +967,29 @@ body {
   gap: 12px;
   margin-top: 52px;
   padding-top: 28px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--line);
 }
 .detail-nav-btn {
   flex: 1;
   padding: 14px 18px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
   cursor: pointer;
-  font-family: "Figtree", inherit;
+  font-family: var(--mono);
   transition: all 0.15s;
   text-align: left;
 }
 .detail-nav-btn:hover {
-  border-color: #363636;
-  background: #fafafa;
+  border-color: var(--grn);
+  background: var(--panel-hover);
 }
 .detail-nav-btn.right {
   text-align: right;
 }
 .detail-nav-label {
   font-size: 0.68rem;
-  color: #bbb;
+  color: var(--faint);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
@@ -792,7 +1003,7 @@ body {
 .detail-nav-name {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #363636;
+  color: var(--fg);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -801,8 +1012,8 @@ body {
 .detail-watermark {
   margin-top: 36px;
   font-size: 0.72rem;
-  color: #d4d4d8;
-  font-family: "JetBrains Mono", monospace;
+  color: var(--faint);
+  font-family: var(--mono);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -818,190 +1029,36 @@ body {
   display: inline-flex;
   align-items: center;
   padding: 4px 12px;
-  background: #e5e7eb;
-  color: #4b5563;
+  background: var(--line);
+  color: var(--fg);
   border-radius: 9999px;
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.75rem;
   font-weight: 700;
 }
 
 .project-page-category {
   padding: 4px 12px;
-  background: #f5f5f5;
-  border: 1px solid #e5e7eb;
+  background: var(--line);
+  border: 1px solid var(--line);
   border-radius: 9999px;
   font-size: 0.72rem;
   font-weight: 500;
-  color: #888;
+  color: var(--dim);
 }
 
 .project-page-no-config {
   padding: 26px;
-  border: 1px dashed #d1d5db;
-  border-radius: 18px;
-  background: #f8fafc;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: var(--panel);
 }
 
 .project-page-no-config-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--fg);
   margin-bottom: 12px;
-}
-
-.navbar-theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.07);
-  color: #f8fafc;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
-}
-
-.navbar-theme-toggle:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-html[data-theme="dark"] {
-  color-scheme: dark;
-}
-
-html[data-theme="dark"],
-html[data-theme="dark"] body {
-  background: #0b1120;
-  color: #e2e8f0;
-}
-
-html[data-theme="dark"] .navbar {
-  background: #090b14;
-}
-
-html[data-theme="dark"] .navbar-links a,
-html[data-theme="dark"] .navbar-theme-toggle {
-  color: #cbd5e1;
-}
-
-html[data-theme="dark"] .sidebar {
-  background: #0d1223;
-  border-color: #17233e;
-}
-
-html[data-theme="dark"] .sidebar-search-input,
-html[data-theme="dark"] .sidebar-filter-icon-btn,
-html[data-theme="dark"] .sfd-item,
-html[data-theme="dark"] .sidebar-active-filter,
-html[data-theme="dark"] .sidebar-count {
-  background: #11182f;
-  border-color: #1f2a45;
-  color: #cbd5e1;
-}
-
-html[data-theme="dark"] .sidebar-item {
-  border-left-color: transparent;
-}
-
-html[data-theme="dark"] .sidebar-item:hover {
-  background: #11182f;
-}
-
-html[data-theme="dark"] .sidebar-item.active {
-  background: #151f36;
-  border-left-color: #2563eb;
-}
-
-html[data-theme="dark"] .sidebar-title,
-html[data-theme="dark"] .sidebar-search-input::placeholder,
-html[data-theme="dark"] .sfd-label,
-html[data-theme="dark"] .sfd-item {
-  color: #94a3b8;
-}
-
-html[data-theme="dark"] .main {
-  background: #08101f;
-}
-
-html[data-theme="dark"] .project-page,
-html[data-theme="dark"] .project-page-no-config {
-  background: #0f172a;
-  border-color: #1e293b;
-}
-
-html[data-theme="dark"] .project-page-number {
-  background: #1e293b;
-  color: #cbd5e1;
-}
-
-html[data-theme="dark"] .project-page-category {
-  background: #1e293b;
-  border-color: #334155;
-  color: #94a3b8;
-}
-
-html[data-theme="dark"] .diff-beginner {
-  background: rgba(22, 163, 74, 0.12);
-  border-color: rgba(22, 163, 74, 0.35);
-  color: #4ade80;
-}
-
-html[data-theme="dark"] .diff-intermediate {
-  background: rgba(217, 119, 6, 0.12);
-  border-color: rgba(217, 119, 6, 0.35);
-  color: #fbbf24;
-}
-
-html[data-theme="dark"] .diff-advanced {
-  background: rgba(220, 38, 38, 0.12);
-  border-color: rgba(220, 38, 38, 0.35);
-  color: #f87171;
-}
-
-/* -- Footer --------------------------------------------------------- */
-.footer {
-  border-top: 1px solid #e5e7eb;
-  padding: 20px 28px;
-  background: #fff;
-  flex-shrink: 0;
-}
-.footer-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.footer-left {
-  font-size: 0.78rem;
-  color: #aaa;
-}
-.footer-left a {
-  color: #888;
-  text-decoration: none;
-  font-weight: 500;
-}
-.footer-left a:hover {
-  color: #363636;
-}
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.footer-right a {
-  font-size: 0.78rem;
-  color: #aaa;
-  text-decoration: none;
-  transition: color 0.15s;
-}
-.footer-right a:hover {
-  color: #363636;
 }
 
 /* -- Mobile ----------------------------------------------------------- */
@@ -1015,15 +1072,8 @@ html[data-theme="dark"] .diff-advanced {
     overflow: visible;
   }
   .shell {
-    flex-direction: column;
     overflow: visible;
     height: auto;
-  }
-  .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e5e7eb;
-    max-height: 300px;
   }
   .main {
     overflow: visible;
@@ -1032,7 +1082,7 @@ html[data-theme="dark"] .diff-advanced {
     padding: 28px 20px;
   }
   .detail-bc-repo {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
   .stat-bar {
     flex-direction: column;
@@ -1040,7 +1090,7 @@ html[data-theme="dark"] .diff-advanced {
   }
   .stat-cell {
     border-right: none;
-    border-bottom: 1px solid #ebe9e4;
+    border-bottom: 1px solid var(--line);
   }
   .stat-cell:last-child {
     border-bottom: none;
@@ -1048,16 +1098,22 @@ html[data-theme="dark"] .diff-advanced {
   .detail-nav {
     flex-direction: column;
   }
-  .sidebar-tooltip {
-    display: none;
+  .cmdk-backdrop {
+    padding: 8vh 12px 12px;
+  }
+  .cmdk-trigger {
+    top: 60px;
+    right: 12px;
+    left: auto;
+    bottom: auto;
   }
 }
 
-/* -- API Playground Panel (used by ProjectDemoPanel.jsx) ------------ */
+/* -- API Playground Panel (used by ProjectApiRunner.jsx) ------------ */
 .demo-panel {
   margin-top: 32px;
   padding-top: 28px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--line);
 }
 .demo-panel-header {
   display: flex;
@@ -1070,19 +1126,19 @@ html[data-theme="dark"] .diff-advanced {
 .demo-panel-label {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #363636;
+  color: var(--fg);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 .base-url {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.7rem;
-  color: #a3a39c;
+  color: var(--dim);
 }
 .endpoint-block {
-  background: #fafaf9;
-  border: 1px solid #ebe9e4;
-  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
   padding: 18px;
   margin-bottom: 14px;
 }
@@ -1093,7 +1149,7 @@ html[data-theme="dark"] .diff-advanced {
   margin-bottom: 8px;
 }
 .method-badge {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.68rem;
   font-weight: 700;
   padding: 2px 8px;
@@ -1103,13 +1159,13 @@ html[data-theme="dark"] .diff-advanced {
   flex-shrink: 0;
 }
 .endpoint-path {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.82rem;
-  color: #363636;
+  color: var(--fg);
 }
 .endpoint-desc {
   font-size: 0.82rem;
-  color: #888;
+  color: var(--dim);
   margin: 0 0 12px;
   line-height: 1.55;
 }
@@ -1119,7 +1175,7 @@ html[data-theme="dark"] .diff-advanced {
 .endpoint-section-label {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #a3a39c;
+  color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 7px;
@@ -1128,7 +1184,7 @@ html[data-theme="dark"] .diff-advanced {
   gap: 8px;
 }
 .status-badge {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-weight: 700;
   font-size: 0.68rem;
   padding: 1px 7px;
@@ -1136,8 +1192,8 @@ html[data-theme="dark"] .diff-advanced {
   border-radius: 5px;
 }
 .response-time {
-  font-family: "JetBrains Mono", monospace;
-  color: #c4c4be;
+  font-family: var(--mono);
+  color: var(--faint);
   font-weight: 400;
   font-size: 0.65rem;
   text-transform: none;
@@ -1145,11 +1201,12 @@ html[data-theme="dark"] .diff-advanced {
   margin-left: auto;
 }
 .json-block {
-  background: #1c1c1c;
-  color: #d4d4d4;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 14px 16px;
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.74rem;
   line-height: 1.65;
   overflow-x: auto;
@@ -1171,7 +1228,7 @@ html[data-theme="dark"] .diff-advanced {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #a3a39c;
+  background: var(--faint);
   animation: run-pulse 1s ease-in-out infinite;
 }
 .run-dot:nth-child(2) {
@@ -1206,7 +1263,7 @@ html[data-theme="dark"] .diff-advanced {
 }
 .demo-disclaimer {
   font-size: 0.7rem;
-  color: #c4c4be;
+  color: var(--faint);
   line-height: 1.55;
   margin-top: 18px;
   text-align: center;
@@ -1219,29 +1276,23 @@ html[data-theme="dark"] .diff-advanced {
   font-size: 0.78rem;
   font-weight: 600;
 }
-
 .status-local {
-  color: #16a34a;
+  color: var(--grn);
 }
-
 .status-external {
-  color: #2563eb;
+  color: var(--amber);
 }
-
 .status-unavailable {
-  color: #9ca3af;
+  color: var(--faint);
 }
 
-html[data-theme="dark"] .status-unavailable {
-  color: #64748b;
-}
-
-/* -- Project page: console mode (Open Project Page view) --------------
-   Replaces the old hero + visual-card layout with a compact topbar
-   so the request console owns the page.
-------------------------------------------------------------------- */
-
+/* -- Project page: console mode -------------------------------------- */
 .project-page-console-mode {
+  /* Navbar/Footer are no longer rendered on this route, so .main is the
+     only thing above/below this box — height: 100% lets it exactly fill
+     .main's box (which itself gets a definite height from #root's
+     100vh flex column) instead of guessing a pixel offset. */
+  height: 100%;
   max-width: 1600px;
   padding: 22px 40px 40px;
   display: flex;
@@ -1268,19 +1319,20 @@ html[data-theme="dark"] .status-unavailable {
   font-size: 1.35rem;
   font-weight: 700;
   margin: 0;
-  color: #111827;
+  color: var(--fg);
   letter-spacing: -0.01em;
+  font-family: var(--mono);
 }
 
 .project-page-back-link {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--dim);
   text-decoration: none;
 }
 
 .project-page-back-link:hover {
-  color: #111827;
+  color: var(--fg);
 }
 
 .project-page-frontend-link {
@@ -1289,52 +1341,44 @@ html[data-theme="dark"] .status-unavailable {
   gap: 6px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #2563eb;
+  color: var(--grn);
   text-decoration: none;
-  border: 1px solid #c7d2fe;
+  border: 1px solid var(--line);
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: background 0.15s;
   flex-shrink: 0;
 }
 
 .project-page-frontend-link:hover {
-  background: #eef2ff;
+  background: var(--panel-hover);
 }
 
 .project-page-console-mode .request-console {
-  min-height: calc(100vh - 210px);
-  border-radius: 16px;
-  box-shadow: 0 24px 60px -24px rgba(15, 23, 42, 0.14);
-}
-
-html[data-theme="dark"] .project-page-topbar-main h1 {
-  color: #e2e8f0;
-}
-
-html[data-theme="dark"] .project-page-back-link {
-  color: #94a3b8;
-}
-
-html[data-theme="dark"] .project-page-back-link:hover {
-  color: #e2e8f0;
-}
-
-html[data-theme="dark"] .project-page-frontend-link {
-  border-color: #334155;
-  color: #93c5fd;
-}
-
-html[data-theme="dark"] .project-page-frontend-link:hover {
-  background: #151f36;
+  /* Was a viewport-relative calc() tuned for when Navbar+Footer were
+     still on this route — now that they're gone, that pixel offset is
+     stale. flex: 1 + min-height: 0 makes this fill whatever space is
+     actually left after the topbar above it, self-adjusting instead of
+     depending on a hardcoded number that has to be re-tuned every time
+     the surrounding layout changes. */
+  flex: 1;
+  min-height: 0;
+  border-radius: 10px;
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {
   .project-page-console-mode {
+    /* On mobile, .main/.shell/#root switch to natural document flow
+       (see the mobile overrides above) rather than a fixed 100vh box —
+       so this page is allowed to scroll normally there, matching that
+       existing pattern instead of forcing an artificial fixed height. */
+    height: auto;
     padding: 16px 16px 28px;
   }
   .project-page-console-mode .request-console {
-    min-height: calc(100vh - 260px);
+    flex: none;
+    min-height: 70vh;
     flex-direction: column;
   }
 }
@@ -1342,30 +1386,30 @@ html[data-theme="dark"] .project-page-frontend-link:hover {
 /* -- Project page: backend/frontend panel toggle ---------------------- */
 .project-page-panel-toggle {
   display: flex;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
   overflow: hidden;
   flex-shrink: 0;
 }
 
 .project-page-panel-toggle button {
   border: none;
-  background: #fff;
+  background: var(--panel);
   padding: 9px 16px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--dim);
   cursor: pointer;
-  font-family: inherit;
+  font-family: var(--mono);
 }
 
 .project-page-panel-toggle button + button {
-  border-left: 1px solid #e5e7eb;
+  border-left: 1px solid var(--line);
 }
 
 .project-page-panel-toggle button.active {
-  background: #111827;
-  color: #fff;
+  background: var(--grn);
+  color: var(--bg);
 }
 
 .project-page-panel-toggle button:disabled {
@@ -1373,20 +1417,69 @@ html[data-theme="dark"] .project-page-frontend-link:hover {
   cursor: not-allowed;
 }
 
-html[data-theme="dark"] .project-page-panel-toggle {
-  border-color: #334155;
+/* -- Footer -------------------------------------------------------------
+   Missing entirely until now — styled to bookend the welcome screen's
+   opening terminal-prompt with a matching closing prompt line.
+------------------------------------------------------------------- */
+.footer {
+  flex-shrink: 0;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+}
+.footer-inner {
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+}
+.footer-prompt {
+  font-size: 0.8rem;
+  color: var(--fg);
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: 100%;
+}
+.footer-prompt a {
+  color: var(--grn);
+  text-decoration: none;
+}
+.footer-prompt a:hover {
+  color: var(--grn-hover);
+}
+.footer-prompt-text {
+  color: var(--dim);
+}
+.footer-cursor {
+  margin-left: 8px;
+}
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+.footer-right a {
+  font-size: 0.8rem;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-right a:hover {
+  color: var(--fg);
 }
 
-html[data-theme="dark"] .project-page-panel-toggle button {
-  background: #0f172a;
-  color: #94a3b8;
-}
-
-html[data-theme="dark"] .project-page-panel-toggle button + button {
-  border-left-color: #334155;
-}
-
-html[data-theme="dark"] .project-page-panel-toggle button.active {
-  background: #2563eb;
-  color: #fff;
+@media (max-width: 768px) {
+  .footer-inner {
+    height: auto;
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }

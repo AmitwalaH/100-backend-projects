@@ -9,22 +9,57 @@ function statusColor(status) {
   return "#dc2626";
 }
 
+// Postman/Insomnia both show status as a filled badge rather than bare
+// colored text — scans at a glance instead of requiring you to read a
+// small colored number. Low-opacity tint of the same status color.
+function statusBg(status) {
+  if (typeof status !== "number") return "rgba(107, 114, 128, 0.14)";
+  if (status >= 200 && status < 300) return "rgba(22, 163, 74, 0.14)";
+  if (status >= 300 && status < 400) return "rgba(37, 99, 235, 0.14)";
+  if (status >= 400 && status < 500) return "rgba(217, 119, 6, 0.14)";
+  return "rgba(220, 38, 38, 0.14)";
+}
+
 function formatBytes(bytes) {
   if (bytes < 1024) return bytes + " B";
   return (bytes / 1024).toFixed(1) + " KB";
 }
 
+const MIME_BY_KIND = {
+  json: "application/json",
+  html: "text/html",
+  xml: "application/xml",
+  text: "text/plain",
+};
+
+const EXT_BY_KIND = {
+  json: "json",
+  html: "html",
+  xml: "xml",
+  text: "txt",
+};
+
 function downloadResponse(response) {
+  // Was hardcoded to application/json + a .json filename regardless of
+  // what the response actually was — an HTML or XML response would be
+  // saved with a misleading extension and MIME type. detectContentKind
+  // is a hoisted function declaration below, so it's safe to call here.
+  const kind = detectContentKind(response);
   const text =
     typeof response.body === "string"
       ? response.body
       : JSON.stringify(response.body, null, 2);
-  const blob = new Blob([text], { type: "application/json" });
+  const blob = new Blob([text], { type: MIME_BY_KIND[kind] || "text/plain" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
   anchor.download =
-    "response-" + (response.status ?? "error") + "-" + Date.now() + ".json";
+    "response-" +
+    (response.status ?? "error") +
+    "-" +
+    Date.now() +
+    "." +
+    (EXT_BY_KIND[kind] || "txt");
   anchor.click();
   URL.revokeObjectURL(url);
 }
@@ -246,7 +281,10 @@ export default function ResponsePanel({ response, isSending }) {
         {typeof response.status === "number" ? (
           <span
             className="rc-status-chip"
-            style={{ color: statusColor(response.status) }}
+            style={{
+              color: statusColor(response.status),
+              background: statusBg(response.status),
+            }}
           >
             {response.status} {response.statusText}
           </span>
