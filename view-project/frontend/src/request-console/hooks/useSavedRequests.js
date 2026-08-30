@@ -35,12 +35,14 @@ export function useSavedRequests(projectKey) {
   }, [projectKey, savedRequests]);
 
   const saveRequest = useCallback((tab, nameOverride, folderOverride) => {
-    const {
-      id: _tabId,
-      isDirty: _dirty,
-      response: _response,
-      ...requestFields
-    } = tab;
+    // Omit tab-only fields (id, isDirty, response) so they don't leak into
+    // the persisted record - a plain shallow-copy + delete avoids naming
+    // unused bindings, which plain destructuring would otherwise require.
+    const requestFields = { ...tab };
+    delete requestFields.id;
+    delete requestFields.isDirty;
+    delete requestFields.response;
+
     const savedId = tab.savedRequestId || createId("saved");
     const record = {
       ...requestFields,
