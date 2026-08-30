@@ -1,0 +1,59 @@
+name: CI
+
+# pull_request (not pull_request_target) is deliberate: this repo accepts
+# contributions from forks, and pull_request keeps GITHUB_TOKEN read-only
+# and withholds secrets from fork code by default. Never switch this to
+# pull_request_target without re-reading why — that trigger is the root
+# cause of most GitHub Actions supply-chain incidents in the wild.
+on:
+  pull_request:
+    branches:
+      - main
+      - feature/api-playground
+    paths:
+      - "view-project/frontend/**"
+      - ".github/workflows/ci.yml"
+  push:
+    branches:
+      - main
+      - feature/api-playground
+    paths:
+      - "view-project/frontend/**"
+      - ".github/workflows/ci.yml"
+
+# Explicit minimal permissions — this workflow only reads the repo and
+# never needs to write anything, so it isn't left on GitHub's default.
+permissions:
+  contents: read
+
+# Cancel a stale run if a newer commit lands on the same PR/branch before
+# the previous run finishes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-lint:
+    name: build-and-lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: view-project/frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: view-project/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
