@@ -38,7 +38,6 @@ export default function CommandPalette({
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef(null);
-  const isFirstRender = useRef(true);
 
   const categoryCounts = useMemo(() => {
     const counts = new Map();
@@ -64,9 +63,17 @@ export default function CommandPalette({
       .slice(0, 50);
   }, [query, activeCategory]);
 
-  useEffect(() => {
+  // Reset the highlighted row whenever the search itself changes. This is a
+  // derived-state adjustment, not a side effect on an external system, so
+  // React's own guidance is to do it during render (comparing against the
+  // previous render's key) rather than in a useEffect — it avoids an extra
+  // render/commit round-trip and the cascading-render lint warning.
+  const resultsKey = `${query}|${activeCategory ?? ""}|${results.length}`;
+  const [prevResultsKey, setPrevResultsKey] = useState(resultsKey);
+  if (resultsKey !== prevResultsKey) {
+    setPrevResultsKey(resultsKey);
     setActiveIndex(0);
-  }, [query, activeCategory, results.length]);
+  }
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -85,19 +92,17 @@ export default function CommandPalette({
     [navigate, onSelect, close],
   );
 
-  // External open request (e.g. a WelcomeScreen chip). Skip on mount so we
-  // don't pop the palette open just because a parent initialized the signal.
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    if (openSignal === undefined) return;
+  // External open request (e.g. a WelcomeScreen chip). Same render-time
+  // comparison technique as above: initializing prevOpenSignal to the first
+  // openSignal value makes the very first render a no-op automatically, so
+  // there's no separate "skip on mount" ref to maintain.
+  const [prevOpenSignal, setPrevOpenSignal] = useState(openSignal);
+  if (openSignal !== undefined && openSignal !== prevOpenSignal) {
+    setPrevOpenSignal(openSignal);
     setIsOpen(true);
     setActiveCategory(initialCategory ?? null);
     setQuery("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openSignal]);
+  }
 
   // Cmd+K / Ctrl+K toggles globally; Escape closes
   useEffect(() => {
